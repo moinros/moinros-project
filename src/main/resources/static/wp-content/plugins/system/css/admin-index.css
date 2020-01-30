@@ -1,0 +1,160 @@
+/*---------- | ---------- | ---------- | admin index START | ---------- | ---------- | ----------*/
+.admin-index .page-title {
+    padding: 10px 20px 10px 20px;
+    border-bottom: 1px solid #ececec;
+    border-left: 1px solid #ececec;
+    border-right: 1px solid #ececec;;
+}
+
+.admin-index .page-title span {
+    font-size: 22px;
+    color: #2a9bff;
+}
+
+.admin-index .left-side-bar {
+    width: 200px;
+    min-height: 600px;
+    border: 1px solid #cccccc;
+}
+
+.side-bar-meun .item {
+    margin-bottom: 2px;
+}
+
+.side-bar-meun .meun-subject {
+    display: block;
+    color: #2c74ff;
+    height: 32px;
+    line-height: 32px;
+    box-shadow: 0px 0px 2px 1px #cccccc inset;
+    user-select: none;
+}
+
+.side-bar-meun .meun-subject span {
+    float: left;
+    display: inline-block;
+    width: 180px;
+    text-align: center;
+}
+
+.side-bar-meun .meun-subject i {
+    float: right;
+    position: absolute;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 8px 0px 8px 0px;
+    vertical-align: middle;
+    z-index: 1;
+}
+
+.side-bar-meun .show-ico {
+    background-image: url('/wp-content/ico/tips-arrow-right.ico');
+}
+
+.side-bar-meun .hide-ico {
+    background-image: url('/wp-content/ico/tips-arrow-button.ico');
+}
+
+.side-bar-meun .meun-subject:hover {
+    color: #ff8b0f;
+    box-shadow: 0px 0px 5px 1px #4cb7ff inset;
+    background-color: rgba(110, 206, 255, 0.2);
+}
+
+.side-bar-meun .meun-subject:active {
+    box-shadow: 0px 0px 5px 1px #f8b91a inset;
+}
+
+
+.side-bar-meun .son-meun {
+    position: relative;
+    float: right;
+    width: 175px;
+    display: none;
+    box-shadow: 0px 0px 2px 1px #cccccc inset;
+}
+
+.side-bar-meun .item::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.side-bar-meun .son-meun li {
+    position: relative;
+    height: 28px;
+    line-height: 28px;
+    user-select: none;
+}
+
+.side-bar-meun .son-meun li:before {
+    content: url("/wp-content/ico/arrow_blue_right_state.net.ico");
+    position: absolute;
+    top: 0px;
+    left: -20px;
+    width: 16px;
+    height: 16px;
+    display: none;
+}
+
+.side-bar-meun .son-meun li:hover {
+    box-shadow: 0px 0px 4px 1px #4cb7ff inset;
+}
+
+.side-bar-meun .son-meun li:hover::before {
+    display: block;
+}
+
+.side-bar-meun .son-meun li:active {
+    box-shadow: 0px 0px 4px 1px #f8b91a inset;
+}
+
+
+.side-bar-meun .son-meun li a {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    display: block;
+    font-size: 14px;
+    line-height: 28px;
+    color: #2c74ff;
+}
+
+.side-bar-meun .son-meun li a:hover {
+    color: #ff8b0f;
+}
+
+.side-bar-meun .son-meun .show-item {
+    animation-duration: 0.3s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-name: show-item;
+}
+
+@keyframes show-item {
+    from {
+        height: 0px;
+    }
+    to {
+        height: 28px;
+    }
+}
+
+.side-bar-meun .son-meun .hide-item {
+    animation-duration: 0.3s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    animation-name: hide-item;
+}
+
+@keyframes hide-item {
+    from {
+        height: 28px;
+    }
+    to {
+        height: 0px;
+    }
+}
+
+/*---------- | ---------- | ---------- | admin index END | ---------- | ---------- | ----------*/

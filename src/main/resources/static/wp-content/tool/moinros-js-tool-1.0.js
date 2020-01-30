@@ -158,6 +158,15 @@
             },
 
             /**
+             * 获取验证码图片
+             */
+            getCheckCodeImg: function(e) {
+                var src = e.src;
+                var index = src.indexOf('?');
+                e.src = (index > -1 ? src.slice(0, index) : src) + '?' + (Date.now() / 10);
+            },
+
+            /**
              * 获取表单提交的数据
              *
              * @Param form 表单DOM对象
@@ -211,22 +220,10 @@
                 return obj;
             },
 
-            /**
-             * 在兄弟元素或者兄弟元素的子元素中查找指定className的元素
-             * @param e DOM元素对象
-             * @param className 元素类名
-             * @returns {null|Element}
-             */
-            getSub: function(e, className) {
-                // 在子元素中查找
-                var son = this.getSon(e, className);
-                if (son != null) {
-                    return son;
-                }
-                // 在兄弟元素中查找
-                return this.getSibling(e, className);
-            },
+
         },
+
+
         /**
          * 为元素添加或者移除event事件
          *
@@ -262,6 +259,7 @@
                 }
             }
         },
+
 
         /**
          * 弹出对话框
@@ -416,7 +414,7 @@
                 }
                 var wrap = document.createElement("div");
                 wrap.className = 'dialog-wrap';
-                wrap.innerHTML = "<div class='dialog-wait'><i class='wait-circle'></i><div class='wait-text'>" + text + "</div></div>";
+                wrap.innerHTML = "<div class='dialog-wait'><i class='wait-circle'></i><div class='wait-text'>Logding···</div><div class='wait-text'>" + text + "</div></div>";
                 document.body.appendChild(wrap);
                 return function() {
                     wrap.parentNode.removeChild(wrap);
@@ -486,7 +484,7 @@
                         document.getElementById('_u_d_image').src = base64.result;
                     };
                 })
-       
+
                 /**
                  * 上传图片
                  */
@@ -545,44 +543,59 @@
             },
         },
     };
-    RosScript.fns.getSub.prototype = {
-        getSibling: function(e, n) {
-            var brother = e.nextElementSibling; // 获取下一个兄弟元素
-            if (brother == undefined || brother == null) {
-                return null;
+
+    /**
+     * 在兄弟元素或者兄弟元素的子元素中查找指定className的元素
+     * @param e DOM元素对象
+     * @param className 元素类名
+     * @returns {null|Element}
+     */
+    RosScript.fns.getSub = function(e, className) {
+        // 在子元素中查找
+        var son = getSon(e, className);
+        if (son != null) {
+            return son;
+        }
+        // 在兄弟元素中查找
+        return getSibling(e, className);
+    };
+    function getSibling(e, n) {
+        var brother = e.nextElementSibling; // 获取下一个兄弟元素
+        if (brother == undefined || brother == null) {
+            return null;
+        }
+        if (getIsNull(brother, n)) {
+            return brother;
+        }
+        var son = getSon(brother, n);
+        if (son != null) {
+            return son;
+        }
+        return getSibling(brother, n);
+    }
+    function getIsNull(e, n) {
+        if (e.className != undefined && e.className != null) {
+            if (e.className.indexOf(n) >= 0) {
+                return true;
             }
-            if (this.getIsNull(brother, n)) {
-                return brother;
-            }
-            var son = this.getSon(brother, n);
-            if (son != null) {
+        }
+        return false;
+    }
+    function getSon(e, n) {
+        var son = e.firstElementChild;
+        if (son == undefined || son == null) {
+            return null;
+        } else {
+            if (getIsNull(son, n)) {
                 return son;
             }
-            return this.getSibling(brother, n);
-        },
-        getIsNull: function(e, n) {
-            if (e.className != undefined && e.className != null) {
-                if (e.className.indexOf(n) >= 0) {
-                    return true;
-                }
-            }
-            return false;
-        },
-        getSon: function(e, n) {
-            var son = e.firstElementChild;
-            if (son == undefined || son == null) {
-                return null;
-            } else {
-                if (this.getIsNull(son, n)) {
-                    return son;
-                }
-            }
-            var brother = this.getSibling(son, n);
-            if (brother != null) {
-                return brother;
-            }
-            return this.getSon(son, n)
         }
+        var brother = getSibling(son, n);
+        if (brother != null) {
+            return brother;
+        }
+        return getSon(son, n)
     }
+
     window.$C = RosScript;
 })();
