@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
+<head>
+    <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/system/css/admin-index.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/system/css/admin-blog.css}"/>
+    <title>后台管理系统 - 博客管理</title>
+</head>
+<body id="app" data="admin-index">
+<th:block th:replace="common/header :: header"></th:block>
+<section class="container">
+    <div class="central">
+        <div class="admin-index">
+            <div class="clearfix">
+                <div class="left-side-bar float-left">
+                    <div class="section">
+                        <div class="admin-data">
+                            <div><label class="admin-img-wrap"><img th:src="${session.ADMIN_DATA.imagePath}"></label>
+                            </div>
+                            <div><label class="admin-name-wrap"><span
+                                    th:text="${session.ADMIN_DATA.nickName}"></span></label></div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <th:block th:replace="plugin/system/side-bar-meun :: sideBarMeun"></th:block>
+                    </div>
+                </div>
+                <div class="content float-right">
+                    <div class="page-title">
+                        <span>博客管理</span> / <span>博客列表</span>
+                    </div>
+                    <div class="blog-list">
+                        <ul th:if="${blogList != null}">
+                            <li th:each="blog,bStat  : ${blogList}" th:class="|clearfix ${(bStat.index % 2 == 0) ? 'float-left' : 'float-right'}|">
+                                <div class="item-subject"><a th:href="|/system/blog/find/${blog.blogId}|" th:text="${blog.blogSubject}" target="_blank"></a></div>
+                                <div class="clearfix">
+                                    <div class="item-cover float-left">
+                                        <i th:style="|background-image: url(${blog.blogCover != null ? blog.blogCover : '/wp-content/img/blog/583556ed758ea.jpg'})|" th:title="${blog.blogCover}" th:onclick="|$C.fns.showImage(this)|"></i>
+                                    </div>
+                                    <div class="item-content float-right">
+                                        <div class="item-intro"><span th:text="${blog.blogIntro}"></span></div>
+                                    </div>
+                                </div>
+                                <div class="blog-tips clearfix">
+                                    <label class=" float-left">标签:
+                                        <th:block th:each="tag,tagStat : ${blog.tagMarks}">
+                                            <a class="tag-mark-link" th:href="|/search?value=${tag}|" th:text="${blog.tagNames[tagStat.index]}" target="_blank"></a>
+                                        </th:block>
+                                    </label>
+                                    <label class="time float-right"><span th:text="${blog.editTime}"></span></label>
+                                </div>
+                            </li>
+                        </ul>
+                        <th:block th:if="${blogList == null}">
+                            <h3>没有查询到数据！</h3>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="common/footer :: footer"></footer>
+<script type="text/javascript" src="/wp-content/tool/util/wangEditor.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/system/js/admin-index.js"></script>
+</body>
+</html>

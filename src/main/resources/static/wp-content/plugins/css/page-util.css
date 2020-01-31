@@ -1,0 +1,55 @@
+.xm-page-util {
+    position: relative;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.xm-page-util .page-box-bar {
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 4px 1px #dfdfdf;
+    font-size: 16px;
+}
+
+.xm-page-util .page-box-bar a {
+    display: inline-block;
+    min-width: 32px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    color: #4cb7ff;
+    background-color: #fbfbfb;
+    border: 1px solid #cccccc;
+}
+
+.xm-page-util .page-box-bar a:hover {
+    display: inline-block;
+    width: 32px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    border: 1px solid #cccccc;
+    animation: page-index 300ms forwards;
+}
+
+@keyframes page-index {
+    from {
+        color: #4cb7ff;
+        background-color: #fbfbfb;
+    }
+    to {
+        color: #ffffff;
+        background-color: #529cf1;
+    }
+}
+
+.xm-page-util .page-box-bar span {
+    display: inline-block;
+    width: 32px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    color: #ffffff;
+    background-color: #529cf1;
+    border: 1px solid #cccccc;
+}

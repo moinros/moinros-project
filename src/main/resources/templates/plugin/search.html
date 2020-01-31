@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="common/head :: head"></th:block>
+    <title>晓默的博客 - 搜索</title>
+</head>
+<body id="app">
+<th:block th:replace="common/header :: header"></th:block>
+<th:block th:replace="common/focus :: focus"></th:block>
+<section class="container">
+    <div class="central">
+        <h3 th:text="${value}"></h3>
+    </div>
+</section>
+<th:block th:replace="common/footer :: footer"></th:block>
+<!--<th:block th:replace="common/live2d :: live2d"></th:block>-->
+</body>
+</html>

@@ -1,0 +1,131 @@
+.blog-write {
+    padding: 10px;
+}
+
+.blog-write .section {
+    margin-bottom: 10px;
+}
+
+.blog-write .section textarea {
+    width: 950px;
+}
+
+
+.blog-write .blog-tag .tag-item {
+    display: inline-block;
+    border: 1px solid #cccccc;
+    padding: 3px 10px 3px 10px;
+    margin: 2px;
+    user-select: none;
+}
+
+.blog-write .blog-tag .is-active {
+    border: 1px solid #2c74ff;
+    background-color: #2a9bff;
+    color: #ffffff;
+}
+
+.blog-write .blog-tag .tag-item input[type='checkbox'] {
+    position: absolute;
+    visibility: hidden;
+}
+
+.blog-write .cover img {
+    width: 960px;
+}
+
+
+.blog-data {
+    padding: 10px;
+}
+
+.blog-data .blog-subject {
+    font-size: 22px;
+    color: #2a9bff;
+    font-weight: 600;
+    padding: 10px;
+}
+
+
+.blog-data .btn-wrap {
+    display: inline-block;
+    width: 160px;
+    margin: 20px;
+    text-align: center;
+}
+
+
+.blog-data.tag-mark-link {
+    border: 1px solid #dfdfdf;
+    padding: 3px 10px 3px 10px;
+    border-radius: 3px;
+    background-color: #fafafa;
+    color: #999999;
+}
+
+
+.blog-data .tag-mark-link:hover {
+    color: #2c74ff;
+    background-color: #ececec;
+}
+
+.blog-list {
+    padding: 10px;
+}
+
+.blog-list li {
+    display: inline-block;
+    width: 480px;
+    margin-bottom: 10px;
+    box-shadow: 0px 0px 5px 1px #cecece;
+}
+
+.blog-list li .item-subject {
+    padding: 10px;
+    background-color: #e6f3ff;
+}
+
+.blog-list li .item-subject a {
+    color: #2c74ff;
+}
+
+.blog-list li .item-subject a:hover {
+    color: #ff922b;
+}
+
+.blog-list li .item-cover {
+    width: 192px;
+    height: 108px;
+}
+
+.blog-list li .item-cover i {
+    display: block;
+    margin: 5px;
+    width: 182px;
+    height: 98px;
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.blog-list li .item-content {
+    width: 288px;
+    min-height: 108px;
+}
+
+.blog-list li .item-intro {
+    padding: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.blog-list li .blog-tips {
+    background-color: #fafafa;
+    font-size: 12px;
+    color: #888888;
+    padding: 5px 10px 5px 10px;
+}
+
+
+.blog-type {
+    padding: 10px;
+}

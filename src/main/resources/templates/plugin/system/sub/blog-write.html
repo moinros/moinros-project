@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
+<head>
+    <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/system/css/admin-index.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/system/css/admin-blog.css}"/>
+    <title>后台管理系统 - 博客管理</title>
+</head>
+<body id="app" data="admin-index">
+<th:block th:replace="common/header :: header"></th:block>
+<section class="container">
+    <div class="central">
+        <div class="admin-index">
+            <div class="clearfix">
+                <div class="left-side-bar float-left">
+                    <div class="section">
+                        <div class="admin-data">
+                            <div><label class="admin-img-wrap"><img th:src="${session.ADMIN_DATA.imagePath}"></label>
+                            </div>
+                            <div><label class="admin-name-wrap"><span
+                                    th:text="${session.ADMIN_DATA.nickName}"></span></label></div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <th:block th:replace="plugin/system/side-bar-meun :: sideBarMeun"></th:block>
+                    </div>
+                </div>
+                <div class="content float-right">
+                    <div class="page-title">
+                        <span>博客管理</span> / <span>编辑博客</span>
+                    </div>
+
+                    <div class="blog-write">
+                        <form id="blog_write_form">
+                            <div class="section">
+                                <div>
+                                    <h3>标题</h3>
+                                </div>
+                                <div>
+                                    <textarea name="subject" placeholder="博客标题"></textarea>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div>
+                                    <h3>简介</h3>
+                                </div>
+                                <div class="intro">
+                                    <textarea name="intro" placeholder="博客简介"></textarea>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div>
+                                    <h3>封面</h3>
+                                </div>
+                                <div class="cover">
+                                    <div id="cover_img_wrap">
+                                    </div>
+                                    <button type="button" id="upload_cover">上传封面</button>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div>
+                                    <h3>分类</h3>
+                                </div>
+                                <div>
+                                    <div class="blog-tag">
+                                        <th:block th:each="tag : ${tagList}">
+                                            <label class="tag-item"><input type="checkbox" name="tags" th:value="${tag.tagMark}"/><span th:text="${tag.tagName}"></span></label>
+                                        </th:block>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="section">
+                                <div>
+                                    <h3>内容</h3>
+                                </div>
+                                <div class="content-editor">
+                                    <div id="moinros-editor"></div>
+                                </div>
+                                <div class="btn-wrap clearfix">
+                                    <a class="button float-right" id="save_blog">保存</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="common/footer :: footer"></footer>
+<script type="text/javascript" src="/wp-content/tool/util/wangEditor.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/system/js/admin-index.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/system/js/admin-blog.js"></script>
+</body>
+</html>

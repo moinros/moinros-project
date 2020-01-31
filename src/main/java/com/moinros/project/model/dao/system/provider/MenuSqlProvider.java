@@ -43,6 +43,7 @@ public class MenuSqlProvider {
 				SELECT(SELECT_SQL);
 				FROM("`sys_menu` AS `sm`");
 				WHERE("`sm`.`html_mark` = #{htmlMark}");
+				WHERE("`sm`.`is_show` = 1");
 			}
 		}.toString();
 	}

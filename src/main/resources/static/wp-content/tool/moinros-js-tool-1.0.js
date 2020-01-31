@@ -157,6 +157,13 @@
                 return true;
             },
 
+            showImage: function(e) {
+                var url = e.getAttribute('title');
+                if (url != undefined && url != null && url != '') {
+                    window.open(url);
+                }
+            },
+
             /**
              * 获取验证码图片
              */
@@ -165,6 +172,7 @@
                 var index = src.indexOf('?');
                 e.src = (index > -1 ? src.slice(0, index) : src) + '?' + (Date.now() / 10);
             },
+
 
             /**
              * 获取表单提交的数据
@@ -559,6 +567,7 @@
         // 在兄弟元素中查找
         return getSibling(e, className);
     };
+
     function getSibling(e, n) {
         var brother = e.nextElementSibling; // 获取下一个兄弟元素
         if (brother == undefined || brother == null) {
@@ -573,6 +582,7 @@
         }
         return getSibling(brother, n);
     }
+
     function getIsNull(e, n) {
         if (e.className != undefined && e.className != null) {
             if (e.className.indexOf(n) >= 0) {
@@ -581,6 +591,7 @@
         }
         return false;
     }
+
     function getSon(e, n) {
         var son = e.firstElementChild;
         if (son == undefined || son == null) {

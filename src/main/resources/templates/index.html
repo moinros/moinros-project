@@ -2,13 +2,88 @@
 <html lang="zh-Hans" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/app-index.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/page-util.css}"/>
     <title>晓默的博客</title>
 </head>
 <body id="app">
 <th:block th:replace="common/header :: header"></th:block>
 <th:block th:replace="common/focus :: focus"></th:block>
-<section class="container">
-    <div class="central">
+<section>
+    <div class="central clearfix">
+
+        <div class="container float-left">
+            <div class="section">
+
+                <article class="section-item clearfix" th:if="${pageBean.list != null}" th:each="blog : ${pageBean.list}">
+                    <div class="item-subject"><a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|" th:text="${blog.blogSubject}"></a></div>
+                    <div class="thumbnail float-left">
+                        <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|">
+                            <i class="cover-img" th:style="|background-image: url(${blog.blogCover != null ? blog.blogCover : '/wp-content/img/blog/583556ed758ea.jpg'})|"></i>
+                        </a>
+                    </div>
+                    <div class="item-context float-left">
+                        <div class="blog-intro"><span th:text="${blog.blogIntro}"></span></div>
+                    </div>
+                    <div class="item-tips clearfix">
+                        <label class="tag-mark float-left" th:each="tag,tagStat : ${blog.tagMarks}">
+                            <a class="tag-mark-link" th:href="|/search?value=${tag}|" th:text="${blog.tagNames[tagStat.index]}"></a>
+                        </label>
+                        <label class="visitor-count float-right" th:text="${blog.visitorCount}"></label>
+                        <label class="time float-right"><span th:text="${blog.editTime}"></span></label>
+                    </div>
+                </article>
+
+            </div>
+            <article class="xm-page-util">
+                <div class="page-box-bar">
+                    <a th:if="${pageBean.pageNo > 1}" href="?page=1" title="首页">&lt;&lt;</a>
+                    <a th:if="${pageBean.pageNo > 1}" th:href="|?page=${pageBean.pageNo - 1}|" title="上一页">&lt;</a>
+                    <th:block th:each="pageNo : ${pageBean.pageNumber}">
+                        <a th:if="${pageNo != pageBean.pageNo}" th:href="|?page=${pageNo}|" th:text="${pageNo}"></a>
+                        <span th:if="${pageNo == pageBean.pageNo}" th:text="${pageNo}"></span>
+                    </th:block>
+                    <a th:if="${pageBean.pageNo < pageBean.totalPage}" th:href="|?page=${pageBean.pageNo + 1}|" title="下一页">&gt;</a>
+                    <a th:if="${pageBean.pageNo < pageBean.totalPage}" th:href="|?page=${pageBean.totalPage}|" title="尾页">&gt;&gt;</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="sidebar float-right">
+
+            <article class="aside-item" th:if="${blogLatest != null}">
+                <div class="title"><span>最新文章</span></div>
+                <div class="content">
+                    <ul class="blog-latest">
+                        <li th:each="blog : ${blogLatest}">
+                            <div class="clearfix" >
+                                <div class="thumbnail float-left">
+                                    <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|" th:title="${blog.blogSubject}">
+                                        <i class="cover-img" th:style="|background-image: url(${blog.blogCover != null ? blog.blogCover : '/wp-content/img/blog/583556ed758ea.jpg'})|"></i>
+                                    </a>
+                                </div>
+                                <div class="subject float-right">
+                                    <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|" th:text="${blog.blogSubject}"></a>
+                                </div>
+                            </div>
+                            <div class="date" th:text="${blog.editTime}"></div>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="aside-item" th:if="${tagList != null}">
+                <div class="title"><span>标签列表</span></div>
+                <div class="content">
+                    <label class="tag-mark" th:each="tag,tagStat : ${tagList}">
+                        <a class="tag-mark-link" th:href="|/search?value=${tag.tagMark}|" th:text="${tag.tagName}" th:attr="title=${tag.tagNote}" target="_blank"></a>
+                    </label>
+                </div>
+            </article>
+
+
+        </div>
+
     </div>
 </section>
 <th:block th:replace="common/footer :: footer"></th:block>
