@@ -24,6 +24,9 @@ public interface BlogMapper {
     @SelectProvider(method = "selectBlogLiSQL", type = BlogSqlProvider.class)
     public List<Blog> selectBlogLi();
 
+    @Select("SELECT `b`.`blog_id` AS `blogId`,`b`.`blog_subject` AS `blogSubject`,`b`.`edit_time` AS `editTime`,`b`.`blog_tags` AS `blogTags` FROM `blog` AS `b` ORDER BY `b`.`edit_time` DESC")
+    public List<Blog> selectBlogTitle();
+
     @SelectProvider(method = "selectBlogSQL", type = BlogSqlProvider.class)
     public List<Blog> selectBlog(Blog blog);
 

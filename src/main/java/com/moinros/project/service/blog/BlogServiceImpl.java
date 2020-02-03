@@ -34,6 +34,14 @@ public class BlogServiceImpl implements BlogService {
     @Override
     @TagMapping
     @Base64Decoder
+    public List<Blog> findTitle() {
+        List<Blog> li = blogMapper.selectBlogTitle();
+        return li == null || li.size() <= 0 ? null : li;
+    }
+
+    @Override
+    @TagMapping
+    @Base64Decoder
     public Blog findBlogById(Integer blogId) {
         Blog blog = new Blog();
         blog.setBlogId(blogId);

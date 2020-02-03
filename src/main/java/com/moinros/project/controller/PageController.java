@@ -1,12 +1,19 @@
 package com.moinros.project.controller;
 
+import com.moinros.project.model.pojo.Blog;
 import com.moinros.project.result.sub.StrConst;
+import com.moinros.project.result.vo.Archive;
+import com.moinros.project.service.blog.BlogService;
+import com.moinros.project.tool.util.date.DateInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 注释: 负责页面跳转的控制器
@@ -18,6 +25,9 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class PageController {
+
+    @Autowired
+    private BlogService blogService;
 
     /**
      * 进入友情链接页面
@@ -31,8 +41,53 @@ public class PageController {
      * 进入档案页面
      */
     @GetMapping("/archive.html")
-    public String archive() {
+    public String archive(Model model) {
+        List<Blog> li = blogService.findTitle();
+        List<Archive> archives = sort(li);
+        model.addAttribute("archives", archives);
         return "other/archive";
+    }
+
+    /**
+     * 文章归档
+     *
+     * @param li
+     * @return
+     */
+    private List<Archive> sort(List<Blog> li) {
+        List<Archive> list = new ArrayList();
+        for (int i = 0; i < li.size(); i++) {
+            String datetime = li.get(i).getEditTime();
+            char[] arr = datetime.toCharArray();
+            StringBuilder sb = new StringBuilder();
+            for (int x = 0; x < 7; x++) {
+                sb.append(arr[x]);
+            }
+            boolean f = true;
+            for (int j = 0; j < list.size(); j++) {
+                String str = list.get(j).getDate().getYear() + '-' + list.get(j).getDate().getMonth();
+                if (str.equals(sb.toString())) {
+                    f = false;
+                    break;
+                }
+            }
+            if (f) {
+                Archive archive = new Archive();
+                archive.setDate(new DateInfo(datetime));
+                list.add(archive);
+            }
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            String str = list.get(i).getDate().getYear() + '-' + list.get(i).getDate().getMonth();
+            for (int j = 0; j < li.size(); j++) {
+                if (li.get(j).getEditTime().indexOf(str) >= 0) {
+                    li.get(j).setEditTime(list.get(i).getDate().getDay());
+                    list.get(i).add(li.get(j));
+                }
+            }
+        }
+        return list;
     }
 
     /**
@@ -57,6 +112,11 @@ public class PageController {
     @GetMapping("/msg.html")
     public String msg() {
         return "other/msg";
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
     }
 
     /**

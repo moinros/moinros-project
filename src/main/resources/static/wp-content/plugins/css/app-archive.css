@@ -1,0 +1,34 @@
+.app-archive a {
+    color: #4cb7ff;
+}
+
+.app-archive a:hover {
+    color: #2a9bff;
+}
+
+.app-archive h2 {
+    color: #345;
+    border-bottom: 1px solid #c4e1fa;
+}
+
+.list {
+    padding: 10px;
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 10px;
+}
+
+.list .item-date {
+    font-size: 20px;
+    color: #f5881a;
+    font-weight: 600;
+    width: 200px;
+    text-align: center;
+}
+
+.list .item-link {
+    width: 960px;
+}
+
+.list li {
+    padding: 5px 10px 5px 10px;
+}

@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
 <head>
     <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/app-archive.css}"/>
     <title>归档 - 晓默的博客</title>
 </head>
 <body id="app">
@@ -9,8 +10,18 @@
 <th:block th:replace="common/focus :: focus"></th:block>
 <section class="container">
     <div class="central">
-        晓默的博客
-        <div id="show"></div>
+        <div class="app-archive">
+            <h2>时间归档</h2>
+            <div class="list clearfix" th:if="${archives != null}" th:each="item : ${archives}">
+                <div class="item-date float-left" th:text="|${item.date.year}年${item.date.month}月|"></div>
+                <ul class="item-link float-right" th:if="${item.list != null}">
+                    <li th:each="blog : ${item.list}">
+                        <span th:text="|${blog.editTime}日|"></span> | <a th:href="|/blog/${blog.tagMarks[0]}/${blog.blogId}|" th:text="${blog.blogSubject}"></a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 </section>
 <th:block th:replace="common/footer :: footer"></th:block>

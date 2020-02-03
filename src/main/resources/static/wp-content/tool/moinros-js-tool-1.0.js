@@ -430,6 +430,48 @@
             }
         },
 
+        login: {
+            close: function() {
+                var box = document.getElementById('loginDialog');
+                if (box != undefined && box != null) {
+                    box.parentNode.removeChild(box);
+                }
+            },
+            dialog: function() {
+                RosScript.login.close();
+                var dialog = document.createElement('div');
+                dialog.id = 'loginDialog';
+                dialog.className = 'dialog-wrap';
+                var box = document.createElement('div');
+                box.className = 'dialog-box';
+                // 添加close条
+                box.appendChild(RosScript.login.closeBar(dialog));
+
+                var contentBox = document.createElement('div');
+                contentBox.className = "content-box";
+                box.appendChild(contentBox);
+
+                dialog.appendChild(box);
+                document.body.appendChild(dialog);
+            },
+
+            closeBar: function(box) {
+                var closeBox = document.createElement('div');
+                closeBox.className = 'dialog-close';
+                var close = document.createElement('i');
+                close.className = 'close';
+                close.innerHTML = "<i></i>";
+                closeBox.appendChild(close);
+                // 点击右上角的X图标关闭对话框
+                RosScript.bindEvent.add(close, 'onclick', function() {
+                    RosScript.login.close(box);
+                });
+                return closeBox;
+            }
+
+        },
+
+
         /**
          * 弹出对话框,选择文件上传到文件服务器
          */

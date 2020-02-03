@@ -1,0 +1,56 @@
+a {
+    color: #00c3ff;
+}
+
+a:hover {
+    color: #3c8ff3;
+}
+
+a:active {
+    color: #ff922b;
+}
+
+
+.blog-data {
+    width: 880px;
+    background-color: #ffffff;
+    padding: 10px 5px 10px 5px;
+}
+
+.blog-data img {
+    width: 860px;
+}
+
+.blog-header label {
+    margin: 5px;
+}
+
+.blog-subject {
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px;
+    color: #4cb7ff;
+    border-bottom: 1px solid #c8faff;
+    margin-bottom: 10px;
+}
+
+.blog-tips {
+    font-size: 14px;
+    padding: 10px;
+    color: #666666;
+    border-bottom: 1px solid #c8faff;
+    margin-bottom: 10px;
+}
+
+.blog-intro {
+    font-size: 16px;
+    padding: 10px;
+    color: #333;
+    border-bottom: 1px solid #c8faff;
+    margin-bottom: 10px;
+}
+
+.blog-content {
+    border: 1px solid #ff922b;
+    padding: 5px;
+}

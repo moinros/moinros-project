@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <script type="text/javascript" src="/wp-content/tool/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/wp-content/tool/moinros-js-tool-1.0.js"></script>
+    <script type="text/javascript" src="/wp-content/tool/RosDialog.js"></script>
+    <script type="text/javascript" src="/wp-content/tool/main.js"></script>
+    <title>晓默的博客 - test</title>
+    <style>
+        .dialog-wrap {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            z-index: 9998;
+            background-color: rgba(153, 153, 153, 0.5);
+        }
+
+        .dialog-box {
+            position: fixed;
+            top: calc(50% - 100px);
+            left: calc(50% - 111px);
+            font-size: 14px;
+            background-color: #ffffff;
+            border: 1px solid #aaa;
+            box-shadow: 0px 0px 5px 1px #c4e1fa;
+            color: #333333;
+            z-index: 9999;
+            user-select: none;
+        }
+
+        .dialog-box .dialog-close {
+            height: 40px;
+            line-height: 40px;
+            background-color: #f2f2f2;
+            border-bottom: 1px solid #dedede;
+        }
+
+        .dialog-box .title {
+            font-size: 18px;
+            color: #333333;
+            height: 20px;
+            padding: 0px 10px 0px 20px;
+        }
+
+        .dialog-box .box-link {
+            color: #666666;
+        }
+
+        .dialog-box .box-link:hover {
+            color: #00c3ff;
+        }
+
+        .dialog-box .close {
+            position: relative;
+            top: 10px;
+            right: 10px;
+            float: right;
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            border: 1px solid #bebebe;
+            background-color: #fafafa;
+            box-shadow: 0px 0px 2px 1px #dedede inset;
+        }
+
+        .dialog-box .close:hover {
+            border: 1px solid #aaaaaa;
+            background-color: #eeeeee;
+            box-shadow: 0px 0px 2px 1px #dedede inset;
+        }
+
+        .dialog-box .close:active {
+            border: 1px solid #bfbfbf;
+            background-color: #efefef;
+            box-shadow: 0px 0px 2px 1px #dedede inset;
+        }
+
+        .dialog-box .close i::before {
+            position: absolute;
+            top: 8px;
+            left: 1px;
+            content: '';
+            display: block;
+            width: 16px;
+            height: 2px;
+            background: #bebebe;
+            transform: rotate(-45deg);
+            border-radius: 1px;
+        }
+
+        .dialog-box .close i::after {
+            position: absolute;
+            top: 8px;
+            left: 1px;
+            content: '';
+            display: block;
+            width: 16px;
+            height: 2px;
+            background: #bebebe;
+            transform: rotate(45deg);
+            border-radius: 1px;
+        }
+
+        .dialog-box .close:hover i::before {
+            background: #888888;
+        }
+
+        .dialog-box .close:hover i::after {
+            background: #888888;
+        }
+
+        .dialog-box .close:active i::before {
+            background: #f5881a;
+        }
+
+        .dialog-box .close:active i::after {
+            background: #f5881a;
+        }
+
+        .dialog-box .content-box {
+            padding: 10px;
+        }
+
+        .dialog-box {
+            position: fixed;
+            top: calc(50% - 200px);
+            left: calc(50% - 200px);
+        }
+
+        .login-box {
+            width: 400px;
+        }
+
+        .login-form ul {
+            display: block;
+            margin: 0px;
+            padding: 20px 0px 20px 0px;
+        }
+
+        .login-form li {
+            width: 254px;
+            margin: auto;
+            list-style: none;
+        }
+
+        .login-form .item {
+            height: 60px;
+        }
+
+        .login-form input {
+            padding: 0px 10px 0px 10px;
+            height: 26px;
+        }
+
+        .login-form input[name='username'] {
+            width: 230px;
+        }
+
+        .login-form input[name='password'] {
+            width: 230px;
+        }
+
+        .login-form .checkcode-box::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .login-form .checkcode-box input {
+            float: left;
+            width: 85px;
+        }
+
+        .login-form .checkcode-box img {
+            float: right;
+            width: 130px;
+            height: 28px;
+            border: 1px solid #00c3ff;
+        }
+
+        .login-form .tips {
+            display: block;
+            height: 28px;
+            font-size: 14px;
+        }
+
+        .login-form .tips-success {
+            color: #0bed16;
+        }
+
+        .login-form .tips-error {
+            color: #ef1408;
+        }
+
+        .login-form .tips::after {
+            content: attr(tips);
+            line-height: 28px;
+            padding: 0px 10px 0px 10px;
+        }
+
+        .login-form .login-button {
+            display: block;
+            height: 28px;
+            line-height: 28px;
+            border: 1px solid #00c3ff;
+            background-color: #0fbcf1;
+            box-shadow: 0px 0px 4px 1px #7fe1ff inset;
+            color: #ffffff;
+            text-align: center;
+            user-select: none;
+        }
+
+        .login-form .login-button:hover {
+            background-color: #00c3ff;
+        }
+
+    </style>
+</head>
+<body id="app">
+<section>
+    <div class="central">
+        <h2><a onclick="RosScript.dialog.login()">登录</a></h2>
+        <h2><a onclick="RosScript.dialog.open()">对话框</a></h2>
+        <h2><a onclick="$C.upload.dialog()">上传</a></h2>
+    </div>
+</section>
+</body>
+</html>

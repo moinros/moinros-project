@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/app-index.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/blog/app-blog.css}"/>
+    <title>晓默的博客</title>
+</head>
+<body id="app">
+<th:block th:replace="common/header :: header"></th:block>
+<th:block th:replace="common/focus :: focus"></th:block>
+<section>
+    <div class="central clearfix">
+
+        <div class="container float-left">
+            <div class="blog-data">
+                <header class="blog-header">
+                    <div class="blog-subject"><span th:text="${blogData.blogSubject}"></span></div>
+                    <div class="blog-tips">
+                        <div>
+                            <label class="clearfix">标签:
+                                <span class="tag-mark" th:each="tag,tagStat : ${blogData.tagMarks}">
+                                    <a class="tag-mark-link" th:href="|/search?value=${tag}|" th:text="${blogData.tagNames[tagStat.index]}"></a>
+                                </span>
+                            </label>
+                        </div>
+                        <div>
+                            <label>编辑时间:<span th:text="${blogData.editTime}"></span></label>
+                            <label>最后修改时间:<span th:text="${blogData.updateTime}"></span></label>
+                            <label class="float-right">点击次数:<span th:text="${blogData.visitorCount}"></span></label>
+                            <label class="float-right">收藏人数：<span th:text="${blogData.likeCount}"></span></label>
+                        </div>
+                    </div>
+                </header>
+                <div class="blog-intro">简介：<span th:text="${blogData.blogIntro}"></span></div>
+                <p><a th:if="${blogData.blogCover != null}" th:href="${blogData.blogCover}" target="_blank">查看封面</a></p>
+                <div class="blog-content">
+                    <div th:utext="${blogData.blogContent}"></div>
+                </div>
+                <div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar float-right">
+
+            <article class="aside-item" th:if="${blogLatest != null}">
+                <div class="title"><span>最新文章</span></div>
+                <div class="content">
+                    <ul class="blog-latest">
+                        <li th:each="blog : ${blogLatest}">
+                            <div class="clearfix">
+                                <div class="thumbnail float-left">
+                                    <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|"
+                                       th:title="${blog.blogSubject}">
+                                        <i class="cover-img"
+                                           th:style="|background-image: url(${blog.blogCover != null ? blog.blogCover : '/wp-content/img/blog/583556ed758ea.jpg'})|"></i>
+                                    </a>
+                                </div>
+                                <div class="subject float-right">
+                                    <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|"
+                                       th:text="${blog.blogSubject}"></a>
+                                </div>
+                            </div>
+                            <div class="date" th:text="${blog.editTime}"></div>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <article class="aside-item" th:if="${tagList != null}">
+                <div class="title"><span>标签列表</span></div>
+                <div class="content">
+                    <label class="tag-mark" th:each="tag,tagStat : ${tagList}">
+                        <a class="tag-mark-link" th:href="|/search?value=${tag.tagMark}|" th:text="${tag.tagName}"
+                           th:attr="title=${tag.tagNote}" target="_blank"></a>
+                    </label>
+                </div>
+            </article>
+
+
+        </div>
+
+    </div>
+</section>
+<th:block th:replace="common/footer :: footer"></th:block>
+<!--<th:block th:replace="common/live2d :: live2d"></th:block>-->
+</body>
+</html>

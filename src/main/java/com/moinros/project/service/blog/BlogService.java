@@ -15,6 +15,8 @@ public interface BlogService {
      */
     List<Blog> findBlogLi();
 
+    List<Blog> findTitle();
+
     /**
      * 注释: 查询指定数量的最新的博客部分数据
      *
