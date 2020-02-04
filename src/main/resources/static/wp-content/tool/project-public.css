@@ -200,6 +200,7 @@ pre code {
     background-color: #4cb7ff;
 }
 
+/*
 
 .upload-dialog .u-d-background {
     position: fixed;
@@ -288,6 +289,7 @@ pre code {
     transform: rotate(45deg);
     border-radius: 1px;
 }
+*/
 
 
 /*----------|----------|header.css|----------|----------*/
@@ -466,6 +468,7 @@ pre code {
 
 
 /*----------|----------|dialog.css|----------|----------*/
+/*
 .dialog-wrap {
     position: fixed;
     top: 0px;
@@ -670,5 +673,6 @@ pre code {
 .login-box .dialog-close {
     margin-bottom: 10px;
 }
+*/
 
 /*----------|----------|dialog.css|----------|----------*/

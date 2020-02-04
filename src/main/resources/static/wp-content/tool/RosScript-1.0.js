@@ -388,6 +388,10 @@
              * @param time 自动关闭时间
              */
             open: function(content, time) {
+                if (content == undefined) {
+                    content = "网络故障！";
+                }
+
                 // 初始化，并弹出对话框
                 RosScript.dialog.init({
                     content: content,

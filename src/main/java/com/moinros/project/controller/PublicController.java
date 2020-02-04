@@ -2,6 +2,7 @@ package com.moinros.project.controller;
 
 import com.moinros.project.result.Reply;
 import com.moinros.project.result.enums.Status;
+import com.moinros.project.result.sub.StrConst;
 import com.moinros.project.result.vo.WebReply;
 import com.moinros.project.tool.cipher.WebRSAEncrypt;
 import com.moinros.project.tool.web.WebCheckCode;
@@ -59,4 +60,17 @@ public class PublicController {
         }
         return r;
     }
+
+    @ResponseBody
+    @PostMapping("/login")
+    public Reply login(String username, String password, String url, HttpSession session) {
+        System.out.println(">> " + username);
+        System.out.println(">> " + password);
+        WebReply r = new WebReply();
+        r.setState(Status.success);
+        r.setContent("登录成功！");
+        StrConst.setMessage("登录成功！", "返回：" + url, url, session);
+        return r;
+    }
+
 }

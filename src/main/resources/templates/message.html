@@ -7,9 +7,11 @@
             text-align: center;
             color: #00c3ff;
         }
+
         a:hover {
             color: #2a9bff;
         }
+
         .bar-wrap {
             display: block;
             width: 500px;
@@ -41,8 +43,8 @@
 </head>
 <body>
 <div>
-    <h2>[[${message.title}]]</h2>
-    <h3><span id="timerNumber"></span>秒后[[${message.content}]]</h3>
+    <h2 th:if="${message != null}" th:text="${message.title}"></h2>
+    <h3 th:if="${message != null}"><span id="timerNumber"></span>秒后<span th:text="${message.content}"></span></h3>
 </div>
 <p>
     <label class="bar-wrap">
@@ -50,24 +52,25 @@
     </label>
 </p>
 <p>
-    <a th:if="${message != null}" th:href="${message.url}">如果浏览器没有反应，点此手动跳转···</a>
+    <a th:if="${message != null}" th:href="${message.url != null ? message.url : '/'}">如果浏览器没有反应，点此手动跳转···</a>
 </p>
 <script>
-    (function () {
+    (function() {
         function progressBar(e, i) {
             e.innerHTML = i;
             i--;
             if (i >= 0) {
-                setTimeout(function () {
+                setTimeout(function() {
                     progressBar(e, i);
                 }, 1000);
             } else {
-                window.location.href = "[[${message.url}]]";
+                window.location.href = "[[${message != null ? message.url : '/'}]]";
             }
         }
-
         const timer = document.getElementById('timerNumber');
-        progressBar(timer, 5);
+        if (timer != undefined && timer != null) {
+            progressBar(timer, 5);
+        }
     })();
 </script>
 </body>

@@ -86,7 +86,7 @@ public class SystemController {
             if (rv.getState()) {
                 r.setState(Status.success);
                 r.setContent("保存成功！");
-                session.setAttribute(StrConst.MESSAGE, StrConst.setMessage("保存成功！", "跳转到该博客页面！", "/system/blog/find/" + rv.getValue().getBlogId()));
+                StrConst.setMessage("保存成功！", "跳转到该博客页面！", "/system/blog/find/" + rv.getValue().getBlogId(), session);
             } else {
                 r.setState(Status.error);
                 r.setContent("保存失败！");

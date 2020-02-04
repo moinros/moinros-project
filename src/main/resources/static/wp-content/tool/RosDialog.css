@@ -1,0 +1,376 @@
+.dialog-wrap {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+    background-color: rgba(153, 153, 153, 0.5);
+}
+
+.dialog-box {
+    position: fixed;
+    top: calc(50% - 100px);
+    left: calc(50% - 111px);
+    font-size: 14px;
+    background-color: #ffffff;
+    border: 1px solid #aaa;
+    box-shadow: 0px 0px 5px 1px #c4e1fa;
+    color: #333333;
+    z-index: 9999;
+    user-select: none;
+}
+
+.dialog-box .dialog-close {
+    height: 40px;
+    line-height: 40px;
+    background-color: #f2f2f2;
+    border-bottom: 1px solid #dedede;
+}
+
+.dialog-box .title {
+    font-size: 18px;
+    color: #333333;
+    height: 20px;
+    padding: 0px 10px 0px 20px;
+}
+
+.dialog-box .box-link {
+    color: #666666;
+}
+
+.dialog-box .box-link:hover {
+    color: #00c3ff;
+}
+
+.dialog-box .close {
+    position: relative;
+    top: 10px;
+    right: 10px;
+    float: right;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid #bebebe;
+    background-color: #fafafa;
+    box-shadow: 0px 0px 2px 1px #dedede inset;
+}
+
+.dialog-box .close:hover {
+    border: 1px solid #aaaaaa;
+    background-color: #eeeeee;
+    box-shadow: 0px 0px 2px 1px #dedede inset;
+}
+
+.dialog-box .close:active {
+    border: 1px solid #bfbfbf;
+    background-color: #efefef;
+    box-shadow: 0px 0px 2px 1px #dedede inset;
+}
+
+.dialog-box .close i::before {
+    position: absolute;
+    top: 8px;
+    left: 1px;
+    content: '';
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: #bebebe;
+    transform: rotate(-45deg);
+    border-radius: 1px;
+}
+
+.dialog-box .close i::after {
+    position: absolute;
+    top: 8px;
+    left: 1px;
+    content: '';
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: #bebebe;
+    transform: rotate(45deg);
+    border-radius: 1px;
+}
+
+.dialog-box .close:hover i::before {
+    background: #888888;
+}
+
+.dialog-box .close:hover i::after {
+    background: #888888;
+}
+
+.dialog-box .close:active i::before {
+    background: #f5881a;
+}
+
+.dialog-box .close:active i::after {
+    background: #f5881a;
+}
+
+.dialog-box .dialog-content {
+    padding: 10px;
+}
+
+.dialog-box .dialog-button {
+    padding: 10px;
+}
+
+.dialog-box {
+    position: fixed;
+    top: calc(50% - 200px);
+    left: calc(50% - 200px);
+}
+
+.message-box {
+    width: 178px;
+    top: calc(50% - 100px);
+    left: calc(50% - 90px);
+}
+
+.dialog-box .dialog-button .button-box {
+    position: relative;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+}
+
+.dialog-box .dialog-button .button {
+    width: 50px;
+    height: 24px;
+    font-size: 14px;
+    color: #456;
+    user-select: none;
+    margin: 0px 10px 0px 10px;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+    border: 1px solid #abb1b3;
+    background-color: #ffffff;
+    box-shadow: 0px -10px 10px 1px #ebebeb inset
+}
+
+.dialog-box .dialog-button .button:hover {
+    color: #333;
+    border: 1px solid #9da2a4;
+}
+
+.dialog-box .dialog-button .button:active {
+    border: 1px solid #a3a9ab;
+    box-shadow: 0px 15px 10px 1px #e8e8e8 inset
+}
+
+.dialog-box .dialog-button .confirm {
+    float: left;
+}
+
+.dialog-box .dialog-button .cancel {
+    float: right;
+}
+
+.login-box {
+    width: 400px;
+}
+
+.login-form ul {
+    display: block;
+    margin: 20px 0px 0px 0px;
+    padding: 0px;
+
+}
+
+.login-form li {
+    width: 254px;
+    margin: auto;
+    list-style: none;
+}
+
+.login-form .item {
+    height: 60px;
+}
+
+.login-form input {
+    padding: 0px 10px 0px 10px;
+    height: 26px;
+    font-family: small, Consolas;
+    letter-spacing: 1px;
+}
+
+.login-form input[name='username'] {
+    width: 230px;
+}
+
+.login-form input[name='password'] {
+    width: 230px;
+}
+
+.login-form .tips {
+    display: block;
+    height: 28px;
+    font-size: 14px;
+}
+
+.login-form .tips-success {
+    color: #0bed16;
+}
+
+.login-form .tips-error {
+    color: #ef1408;
+}
+
+.login-form .tips::after {
+    content: attr(tips);
+    line-height: 28px;
+    padding: 0px 10px 0px 10px;
+}
+
+.login-form .login-button {
+    display: block;
+    height: 28px;
+    line-height: 28px;
+    border: 1px solid #00c3ff;
+    background-color: #0fbcf1;
+    box-shadow: 0px 0px 4px 1px #7fe1ff inset;
+    color: #ffffff;
+    text-align: center;
+    user-select: none;
+}
+
+.login-form .login-button:hover {
+    background-color: #00c3ff;
+}
+
+.slide-box {
+    top: calc(50% - 100px);
+    left: calc(50% - 160px);
+    border: 1px solid #acacac;
+}
+
+.slide-bar {
+    position: relative;
+    width: 255px;
+    height: 30px;
+    padding: 2px;
+    border: 1px solid #c3cfd2;
+    margin: 20px;
+    border-radius: 5px;
+    user-select: none;
+    box-shadow: 0px 0px 5px 1px #b4c6cc inset;
+    z-index: 997;
+    background-color: #ffffff;
+}
+
+.slide-bar .text {
+    position: absolute;
+    color: #888888;
+    width: 255px;
+    height: 30px;
+    margin: auto;
+    text-align: center;
+    line-height: 30px;
+    font-size: 14px;
+    z-index: 997;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0px 0px 2px 1px #b4c6cc inset;
+}
+
+.slide-bar .tips {
+    display: none;
+}
+
+.slide-bar .tips::after {
+    position: absolute;
+    top: 0px;
+    text-align: center;
+    width: 255px;
+    height: 30px;
+    color: #0bed16;
+    line-height: 30px;
+    content: '验证成功！';
+    animation-name: slide-tips;
+    animation-duration: 255ms;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes slide-tips {
+    from {
+        top: 0px;
+    }
+    to {
+        top: -30px;
+    }
+}
+
+.slide-bar .slider {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: grab;
+    z-index: 998;
+}
+
+.slide-bar .slider::after {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    content: url("/wp-content/ico/slider_right.ico");
+}
+
+@keyframes slider-tips {
+    from {
+        left: 40px;
+    }
+    to {
+        left: 185px;
+    }
+}
+
+.dialog-wrap .dialog-wait {
+    position: fixed;
+    top: calc(50% - 100px);
+    left: calc(50% - 100px);
+    min-width: 200px;
+    min-height: 80px;
+    text-align: center;
+}
+
+.dialog-wrap .dialog-wait .wait-text {
+    color: #f8f72d;
+    padding: 10px;
+}
+
+.dialog-wrap .dialog-wait .wait-circle {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px dotted #47ff19;
+    border-radius: 19px;
+    user-select: none;
+    animation-name: dialog-wait;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes dialog-wait {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

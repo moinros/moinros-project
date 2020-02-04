@@ -4,6 +4,7 @@ import com.moinros.project.result.vo.MessageInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -34,11 +35,12 @@ public class StrConst {
 
     public static final String ENCRYPT_KEY_NAME = "RSAEncryptKey";
 
-    public static MessageInfo setMessage(String title, String content, String url) {
+    public static MessageInfo setMessage(String title, String content, String url, HttpSession session) {
         MessageInfo msg = new MessageInfo();
         msg.setTitle(title);
         msg.setContent(content);
         msg.setUrl(url);
+        session.setAttribute(MESSAGE, msg);
         return msg;
     }
 

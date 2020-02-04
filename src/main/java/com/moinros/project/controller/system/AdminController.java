@@ -52,9 +52,10 @@ public class AdminController {
         var admin = session.getAttribute(StrConst.ADMIN_DATA);
         session.setAttribute(StrConst.ADMIN_DATA, null);
         if (admin != null) {
-            session.setAttribute(StrConst.MESSAGE, StrConst.setMessage("退出后台系统！", "返回网站首页", "/"));
+             StrConst.setMessage("退出后台系统！", "返回网站首页", "/", session);
+
         } else {
-            session.setAttribute(StrConst.MESSAGE, StrConst.setMessage("你还没有登录哦！", "返回网站首页", "/"));
+            StrConst.setMessage("你还没有登录哦！", "返回网站首页", "/", session);
         }
         return "redirect:/message.html";
     }
@@ -100,7 +101,7 @@ public class AdminController {
                     var admin = adminService.login(username, cipher, log);
                     if (admin != null) {
                         session.setAttribute(StrConst.ADMIN_DATA, admin);
-                        session.setAttribute(StrConst.MESSAGE, StrConst.setMessage("登录成功！", "跳转到后台管理首页", "/system/index"));
+                        StrConst.setMessage("登录成功！", "跳转到后台管理首页", "/system/index", session);
                         r.setState(Status.success);
                         r.setContent("登录成功！");
                     } else {

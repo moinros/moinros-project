@@ -47,7 +47,7 @@ public class SystemInterceptor implements HandlerInterceptor {
                 if (admin == null) {
                     flag = false;
                     // 管理员未登录禁止访问,重定向到登录页面
-                    session.setAttribute(StrConst.MESSAGE, StrConst.setMessage("管理员未登录！禁止访问！", "跳转到管理员登录页面", URL_LOGIN));
+                    StrConst.setMessage("管理员未登录！禁止访问！", "跳转到管理员登录页面", URL_LOGIN, session);
                     response.sendRedirect("/message.html");
                 }
             }

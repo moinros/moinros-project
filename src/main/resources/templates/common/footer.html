@@ -18,6 +18,16 @@
             </div>
         </div>
     </footer>
+    <script>
+        var links = document.getElementsByTagName("a");
+        for (var i = 0; i < links.length; i++) {
+            if (links[i].getAttribute('target') == undefined || links[i].getAttribute('target') == null) {
+                if (links[i].onclick == undefined || links[i].onclick == null) {
+                    $C.bindEvent.add(links[i], 'onclick', RosDialog.dialog.wait);
+                }
+            }
+        }
+    </script>
 </th:block>
 </html>
 

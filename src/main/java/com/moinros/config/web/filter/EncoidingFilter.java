@@ -25,7 +25,7 @@ public class EncoidingFilter implements javax.servlet.Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
         request.setCharacterEncoding("utf-8");
-        request.setAttribute("focustext", "向着梦的方向艰难前行！");
+        request.setAttribute("focustext", "向着梦的方向艰难前行！<a style=\"float: right;\" onclick=\"RosDialog.dialog.login()\">登录</a>");
         response.setCharacterEncoding("utf-8");
         response.setContentType("txt/html;charset=utf-8");
         chain.doFilter(request, response);
