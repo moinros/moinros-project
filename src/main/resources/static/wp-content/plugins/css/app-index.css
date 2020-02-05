@@ -103,6 +103,17 @@ body {
     padding: 0px 10px 0px 10px;
 }
 
+.section-item .visitor-count {
+    margin: 0px 5px 0px 5px;
+}
+
+.section-item .visitor-count::before {
+    content: url("/wp-content/ico/eye.ico");
+    vertical-align: middle;
+    margin: 0px 5px 0px 5px;
+
+}
+
 .aside-item {
     margin: 10px 0px 10px 0px;
     background-color: #ffffff;

@@ -1,3 +1,9 @@
+.app-archive {
+    background-color: #fff;
+    padding: 10px;
+    margin: 10px 0px 0px 0px;
+}
+
 .app-archive a {
     color: #4cb7ff;
 }
@@ -11,24 +17,23 @@
     border-bottom: 1px solid #c4e1fa;
 }
 
-.list {
+.app-archive .list {
     padding: 10px;
     border-bottom: 1px solid #dddddd;
     margin-bottom: 10px;
 }
 
-.list .item-date {
+.app-archive .list .item-date {
+    display: block;
     font-size: 20px;
     color: #f5881a;
     font-weight: 600;
-    width: 200px;
-    text-align: center;
 }
 
-.list .item-link {
-    width: 960px;
+.app-archive .list .item-link {
+    width: 800px;
 }
 
-.list li {
+.app-archive .list li {
     padding: 5px 10px 5px 10px;
 }

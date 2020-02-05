@@ -2,15 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
 <head>
     <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/app-index.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/app-friend.css}"/>
     <title>友链 - 晓默的博客</title>
 </head>
 <body id="app">
 <th:block th:replace="common/header :: header"></th:block>
 <th:block th:replace="common/focus :: focus"></th:block>
-<section class="container">
-    <div class="central">
-        晓默的博客
-        <div id="show"></div>
+<section>
+    <div class="central clearfix">
+
+        <div class="container float-left">
+            <div class="section">
+
+                <article class="link-box clearfix" th:if="${friendList != null}">
+                    <p class="box-title">大佬们</p>
+                    <div class="link-item" th:each="friend : ${friendList}">
+                        <a th:href="${friend.friendLink}" th:data="|{'id':'${friend.fid}','name':'${friend.friendName}','link':'${friend.friendLink}'}|" target="_blank">
+                            <label class="link-img"><img th:src="${friend.friendImage}"></label>
+                            <label class="link-text"><p th:text="${friend.friendName}"></p><span th:text="${friend.friendIntro}" th:title="${friend.friendIntro}"></span></label>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+        <th:block th:replace="sidebar :: sidebar"></th:block>
+
     </div>
 </section>
 <th:block th:replace="common/footer :: footer"></th:block>

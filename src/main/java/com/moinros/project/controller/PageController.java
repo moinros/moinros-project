@@ -1,9 +1,12 @@
 package com.moinros.project.controller;
 
 import com.moinros.project.model.pojo.Blog;
+import com.moinros.project.model.pojo.Friend;
 import com.moinros.project.result.sub.StrConst;
 import com.moinros.project.result.vo.Archive;
 import com.moinros.project.service.blog.BlogService;
+import com.moinros.project.service.other.FriendService;
+import com.moinros.project.service.system.SystemService;
 import com.moinros.project.tool.util.date.DateInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,23 +31,37 @@ public class PageController {
 
     @Autowired
     private BlogService blogService;
+    @Autowired
+    private FriendService friendService;
+    @Autowired
+    private SystemService systemService;
 
     /**
      * 进入友情链接页面
      */
     @GetMapping("/friends.html")
-    public String friend() {
+    public String friend(Model model) {
+        List<Friend> li = friendService.findFriend();
+        model.addAttribute("friendList", li);
+        List tagList = systemService.findTagList();
+        List blogLatest = blogService.findBlogUpLimit(5);
+        model.addAttribute("tagList", tagList);
+        model.addAttribute("blogLatest", blogLatest);
         return "other/friend";
     }
 
     /**
-     * 进入档案页面
+     * 进入文章档案页面
      */
     @GetMapping("/archive.html")
     public String archive(Model model) {
         List<Blog> li = blogService.findTitle();
         List<Archive> archives = sort(li);
         model.addAttribute("archives", archives);
+        List tagList = systemService.findTagList();
+        List blogLatest = blogService.findBlogUpLimit(5);
+        model.addAttribute("tagList", tagList);
+        model.addAttribute("blogLatest", blogLatest);
         return "other/archive";
     }
 

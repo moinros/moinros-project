@@ -418,6 +418,21 @@ pre code {
     box-shadow: 0px 15px 10px 1px #2791f0 inset;
 }
 
+.nav-user-center {
+    height: 36px;
+    float: right;
+    margin: 0px 10px 0px 10px;
+    padding: 0px 10px 0px 10px;
+}
+
+.nav-user-center .user-img img {
+    width: 34px;
+    height: 34px;
+    border: 1px solid #ff379c;
+    border-radius: 18px;
+}
+
+
 /*----------|----------|header.css|----------|----------*/
 .focus {
     background-color: #fbfbfb;

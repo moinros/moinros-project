@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
+<th:block th:fragment="sidebar">
+    <div class="sidebar float-right">
+
+        <article class="aside-item" th:if="${blogLatest != null}">
+            <div class="title"><span>最新文章</span></div>
+            <div class="content">
+                <ul class="blog-latest">
+                    <li th:each="blog : ${blogLatest}">
+                        <div class="clearfix" >
+                            <div class="thumbnail float-left">
+                                <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|" th:title="${blog.blogSubject}">
+                                    <i class="cover-img" th:style="|background-image: url(${blog.blogCover != null ? blog.blogCover : '/wp-content/img/blog/583556ed758ea.jpg'})|"></i>
+                                </a>
+                            </div>
+                            <div class="subject float-right">
+                                <a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|" th:text="${blog.blogSubject}"></a>
+                            </div>
+                        </div>
+                        <div class="date" th:text="${blog.editTime}"></div>
+                    </li>
+                </ul>
+            </div>
+        </article>
+
+        <article class="aside-item" th:if="${tagList != null}">
+            <div class="title"><span>标签列表</span></div>
+            <div class="content">
+                <label class="tag-mark" th:each="tag,tagStat : ${tagList}">
+                    <a class="tag-mark-link" th:href="|/search?value=${tag.tagMark}|" th:text="${tag.tagName}" th:attr="title=${tag.tagNote}" target="_blank"></a>
+                </label>
+            </div>
+        </article>
+
+    </div>
+</th:block>
+</html>
