@@ -22,8 +22,8 @@
 }
 
 .dialog-box .dialog-close {
-    height: 40px;
-    line-height: 40px;
+    height: 32px;
+    line-height: 32px;
     background-color: #f2f2f2;
     border-bottom: 1px solid #dedede;
 }
@@ -45,9 +45,9 @@
 
 .dialog-box .close {
     position: relative;
-    top: 10px;
-    right: 10px;
     float: right;
+    top: 6px;
+    right: 6px;
     width: 18px;
     height: 18px;
     border-radius: 3px;
@@ -115,7 +115,7 @@
 }
 
 .dialog-box .dialog-button {
-    padding: 10px;
+    padding: 5px 10px 10px 10px;
 }
 
 .dialog-box {
@@ -125,7 +125,7 @@
 }
 
 .message-box {
-    width: 178px;
+    width: 180px;
     top: calc(50% - 100px);
     left: calc(50% - 90px);
 }
@@ -133,8 +133,8 @@
 .dialog-box .dialog-button .button-box {
     position: relative;
     display: block;
-    height: 30px;
-    line-height: 30px;
+    height: 24px;
+    line-height: 24px;
 }
 
 .dialog-box .dialog-button .button {

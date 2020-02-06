@@ -146,6 +146,11 @@
                 }
                 return f;
             },
+            /**
+             * 验证参数是否为空值,忽略空格
+             * @param v value值
+             * @returns {boolean}
+             */
             valueIsNull: function(v) {
                 if (v == undefined || v == null || v == '') {
                     return false;
@@ -184,13 +189,19 @@
                 var item = form.getElementsByTagName('input');
                 var obj = {};
                 for (var i = 0; i < item.length; i++) {
-                    if (item[i].type == "text" || item[i].type == "password"
+                    if (   item[i].type == "text"
+                        || item[i].type == "password"
                         || item[i].type == "select-one"
-                        || item[i].type == "tel" || item[i].type == "search"
-                        || item[i].type == "range" || item[i].type == "number"
-                        || item[i].type == "month" || item[i].type == "email"
+                        || item[i].type == "tel"
+                        || item[i].type == "url"
+                        || item[i].type == "search"
+                        || item[i].type == "range"
+                        || item[i].type == "number"
+                        || item[i].type == "month"
+                        || item[i].type == "email"
                         || item[i].type == "datetime-local"
-                        || item[i].type == "datetime" || item[i].type == "date"
+                        || item[i].type == "datetime"
+                        || item[i].type == "date"
                         || item[i].type == "color") {
                         obj[item[i].name] = item[i].value;
                     } else if (item[i].type == "checkbox") {

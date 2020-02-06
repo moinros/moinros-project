@@ -113,6 +113,10 @@
 
             /**
              * 弹出消息提示框
+             * @param text 设置提示内容
+             * @param time 设置对话框自动关闭时间。单位/毫秒（如果不传或者 time<=0, 则不自动关闭对话框）
+             * @param confirmMethod 绑定点击确定按钮执行(confirmMethod)函数
+             * @param cancelMethod 绑定点击取消按钮执行(cancelMethod)函数
              */
             open: function(text, time, confirmMethod, cancelMethod) {
                 var confirm; // '确定'按钮
@@ -176,7 +180,7 @@
                 // 设置自动关闭对话框的函数，如果没有设置，对话框则一直存在
                 if (time != undefined && time != null && time != '' && time > 0) {
                     setTimeout(function() {
-                        RosScript.dialog.close(dialogBox);
+                        RosDialog.dialog.close(dialogBox);
                     }, time);
                 }
             },

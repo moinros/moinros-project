@@ -4,15 +4,6 @@
     background-color: #fff;
 }
 
-.link-box .box-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: #2a9bff;
-    border-bottom: 1px solid #dedede;
-    margin: 0px 0px 10px 0px;
-    padding: 10px;
-}
-
 .link-box .link-item {
     position: relative;
     float: left;

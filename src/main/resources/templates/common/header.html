@@ -23,7 +23,7 @@
                     </form>
                 </div>
                 <div class="nav-user-center" th:if="${session.USER_DATA != null}">
-                    <a class="user-img" title="晓默"><img src="/wp-content/img/user/moinros.jpg"></a>
+                    <a class="user-img" id="USER_CENTER" title="晓默" th:data="|{'uid':session.USER_DATA.userId,'name':session.USER_DATA.nickName}|"><img src="/wp-content/img/user/moinros.jpg"></a>
            <!--         <div class="mini-avatar">
                         <span>晓默</span>
                     </div>-->
