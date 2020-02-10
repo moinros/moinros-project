@@ -26,4 +26,10 @@ public class FriendServiceImpl implements FriendService {
         List li = friendMapper.selectAllFriend();
         return li != null && li.size() > 0 ? li : null;
     }
+
+    @Override
+    public boolean addFriend(Friend friend) {
+        Integer i = friendMapper.insertFriend(friend);
+        return i != null && i.intValue() > 0 ? true : false;
+    }
 }

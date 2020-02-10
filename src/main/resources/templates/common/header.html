@@ -14,7 +14,7 @@
                         <li><a href="/friends.html">友链</a></li>
                         <li><a href="/about.html">关于</a></li>
                         <!--   <li><a href="/log.html">日志</a></li>-->
-                        <li><a  href="/msg.html">留言板</a></li>
+                        <li><a href="/msg.html">留言板</a></li>
                     </ul>
                 </div>
                 <div class="search-box float-right">
@@ -23,10 +23,21 @@
                     </form>
                 </div>
                 <div class="nav-user-center" th:if="${session.USER_DATA != null}">
-                    <a class="user-img" id="USER_CENTER" title="晓默" th:data="|{'uid':session.USER_DATA.userId,'name':session.USER_DATA.nickName}|"><img src="/wp-content/img/user/moinros.jpg"></a>
-           <!--         <div class="mini-avatar">
-                        <span>晓默</span>
-                    </div>-->
+                    <a class="user-img" id="USER_CENTER" title="晓默" th:data="|({'uid':'${session.USER_DATA.userId}','name':'${session.USER_DATA.nickName}','img':'${session.USER_DATA.imagePath}'})|"><img th:src="${session.USER_DATA.imagePath}"></a>
+                    <div class="mini-avatar" id="mini_avatar">
+                        <ul>
+                            <li><a>个人中心</a></li>
+                            <li><a th:href="|/logout?url=${#httpServletRequest.getRequestURL()}|">退出登录</a></li>
+                        </ul>
+                    </div>
+                    <script>
+                        (function() {
+                            var miniAvatar = document.getElementById('mini_avatar');
+                            $C.bindEvent.add(document.getElementById('USER_CENTER'), 'onclick', function() {
+                                miniAvatar.style.display = miniAvatar.style.display == 'none' || !miniAvatar.style.display ? 'block' : 'none';
+                            });
+                        })();
+                    </script>
                 </div>
             </div>
         </div>

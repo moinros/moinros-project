@@ -130,6 +130,34 @@
     left: calc(50% - 90px);
 }
 
+.message-box .dialog-content {
+    min-height: 40px;
+}
+
+.message-text {
+    position: absolute;
+    top: auto;
+    left: auto;
+    right: 50px;
+    bottom: 20px;
+    width: 256px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    animation-name: message-text;
+    animation-duration: 360ms;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes message-text {
+    from {
+        height: 36px;
+    }
+    to {
+        height: 175px;
+    }
+}
+
 .dialog-box .dialog-button .button-box {
     position: relative;
     display: block;
@@ -202,6 +230,11 @@
     height: 26px;
     font-family: small, Consolas;
     letter-spacing: 1px;
+}
+
+.login-form input:focus {
+    border: 1px solid #00c3ff;
+    box-shadow: 0px 0px 4px 0px #2a9bff;
 }
 
 .login-form input[name='username'] {
@@ -310,6 +343,16 @@
         top: -30px;
     }
 }
+
+@keyframes slider-tips {
+    from {
+        left: 40px;
+    }
+    to {
+        left: 185px;
+    }
+}
+
 
 .slide-bar .slider {
     position: absolute;

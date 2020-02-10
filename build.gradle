@@ -6,13 +6,15 @@ plugins {
 
 group = 'com.moinros'
 version = '1.1'
-sourceCompatibility = '11'
+sourceCompatibility = '12'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+
+    compile files('lib/moinrs-too-mail-1.0.jar')
 
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -28,6 +30,9 @@ dependencies {
     compile group: 'commons-codec', name: 'commons-codec', version: '1.12'
     //
     compile group: 'eu.bitwalker', name: 'UserAgentUtils', version: '1.21'
+
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+
     //开启项目热部署
     implementation 'org.springframework.boot:spring-boot-devtools'
 

@@ -45,6 +45,27 @@ input[type="text"]:focus {
     color: #333;
 }
 
+input::-webkit-input-placeholder { /* WebKit browsers */
+    color: #a3a9ab;
+    font-size: 14px;
+}
+
+input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #a3a9ab;
+    font-size: 14px;
+}
+
+input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #a3a9ab;
+    font-size: 14px;
+}
+
+input:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #a3a9ab;
+    font-size: 14px;
+}
+
+
 button {
     text-align: center;
     white-space: nowrap;
@@ -164,7 +185,7 @@ pre code {
 
 .tips:after {
     font-size: 14px;
-    color: #c81414;
+    color: #ff0000;
     content: attr(tips);
 }
 
@@ -173,7 +194,7 @@ pre code {
 }
 
 .tips-error:after {
-    color: #c81414;
+    color: #ff0000;
 }
 
 .btn-wrap .button {
@@ -446,10 +467,17 @@ pre code {
 }
 
 .nav-user-center {
+    position: relative;
     height: 36px;
     float: right;
     margin: 0px 10px 0px 10px;
     padding: 0px 10px 0px 10px;
+}
+
+.nav-user-center .user-img {
+    display: block;
+    width: 36px;
+    height: 36px;
 }
 
 .nav-user-center .user-img img {
@@ -459,6 +487,35 @@ pre code {
     border-radius: 18px;
 }
 
+.nav-user-center .mini-avatar {
+    position: absolute;
+    display: none;
+    top: 46px;
+    left: 0px;
+    background-color: #fff;
+    padding: 5px 0px 5px 0px;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: 0px 0px 4px 0px #ccc;
+}
+
+.nav-user-center .mini-avatar li {
+    min-width: 100px;
+    text-align: center;
+}
+
+.nav-user-center .mini-avatar li:hover {
+    background-color: #00c3ff;
+}
+
+.nav-user-center .mini-avatar a {
+    display: block;
+    font-size: 14px;
+    padding: 5px 10px 5px 10px;
+}
+
+.nav-user-center .mini-avatar li:hover a {
+    color: #fff;
+}
 
 /*----------|----------|header.css|----------|----------*/
 .focus {
@@ -538,6 +595,36 @@ pre code {
     border-radius: 4px;
     box-shadow: 0px 0px 4px 1px #d7dee1 inset;
 }
+
+.comment-editor .editor-box .editor_box_tips {
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    height: 24px;
+    line-height: 24px;
+    padding: 0px 10px 0px 10px;
+    animation-name: editor-tips;
+    animation-duration: 5s;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+@keyframes editor-tips {
+    1% {
+        bottom: 0px;
+    }
+    10% {
+        bottom: 30px;
+    }
+    90% {
+        bottom: 30px;
+    }
+    100% {
+        bottom: 0px;
+    }
+}
+
 
 .comment-editor .editor-box .comt-area {
     border: none;

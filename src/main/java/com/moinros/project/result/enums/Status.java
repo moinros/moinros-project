@@ -7,19 +7,50 @@ import com.moinros.project.result.State;
  */
 public enum Status implements State {
 
-	/**
-	 * success 注释: 成功
-	 */
-	success,
+    /**
+     * success : 成功
+     */
+    success,
 
-	/**
-	 * error 注释: 失败
-	 */
-	error,
+    /**
+     * SUCCESS : 成功
+     */
+    SUCCESS,
 
-	/**
-	 * exception 注释: 出现异常
-	 */
-	exception,;
+    /**
+     * error : 失败
+     */
+    error,
+
+    /**
+     * ERROR : 失败
+     */
+    ERROR,
+
+    /**
+     * exception : 服务器出现异常
+     */
+    exception,
+
+    /**
+     * EXCEPTION : 服务器出现异常
+     */
+    EXCEPTION,
+
+    /**
+     * OK : 正常
+     */
+    OK,
+
+    /**
+     * NO : 异常
+     */
+    NO,
+
+    /**
+     * MSG : 新的消息
+     */
+    MSG,
+    ;
 
 }

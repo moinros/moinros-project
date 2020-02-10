@@ -1,4 +1,4 @@
-package com.moinros.project.common.annotation;
+package com.moinros.project.common.annotation.tool;
 
 import java.lang.annotation.*;
 
@@ -15,5 +15,7 @@ import java.lang.annotation.*;
 public @interface ParamIsNull {
 
     String[] paramName();
+
+    //Class paramType() default String.class;
 
 }

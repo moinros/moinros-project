@@ -17,6 +17,7 @@
             repeated: /^(.)\1+$/,
             // 匹配纯数字
             number: /^\d+$/,
+            url: /^(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/,
         },
         key: {
             /**
@@ -66,27 +67,39 @@
              * @param time 每次执行的间隔时间,默认1000
              */
             timer: function(fn, index) {
-                fn(index);
+                fn(index, flag);
                 index--;
                 if (index >= 0) {
                     setTimeout(function() {
                         RosScript.fns.timer(fn, index);
                     }, 1000);
                 } else {
-                    fn(index);
+                    fn(index, flag);
                 }
             },
 
             /**
              * 循环计时器
-             * @param fn 需要执行的函数
+             * @param fn 需要执行的函数,function(data)flag:是否结束循环,time,index循环次数。
              * @param time 每次执行的间隔时间
              */
             loopTimer: function(fn, time) {
-                fn();
-                setTimeout(function() {
-                    RosScript.fns.loopTimer(fn, time);
-                }, time);
+                var data = {
+                    flag: true,
+                    index: 1,
+                };
+
+                function heartbeat(fn, data) {
+                    fn(data);
+                    data.index++;
+                    if (data.flag) {
+                        setTimeout(function() {
+                            heartbeat(fn, data);
+                        }, time);
+                    }
+                }
+
+                heartbeat(fn, data);
             },
 
             /**
@@ -96,7 +109,7 @@
                 if (e == undefined || e == null || e.type == 'input') {
                     e = this;
                 }
-                var v = e.value;
+                let v = e.value;
                 if (v == undefined || v == null) {
                     return false;
                 }
@@ -189,7 +202,7 @@
                 var item = form.getElementsByTagName('input');
                 var obj = {};
                 for (var i = 0; i < item.length; i++) {
-                    if (   item[i].type == "text"
+                    if (item[i].type == "text"
                         || item[i].type == "password"
                         || item[i].type == "select-one"
                         || item[i].type == "tel"
@@ -279,6 +292,44 @@
             }
         },
 
+        socket: {
+
+            onceTask: function(callback) {
+                var task = {
+                    state: 'OK',
+                    msg: null,
+                }
+                if (RosScript.fns.isFunction(callback)) {
+                    RosScript.fns.loopTimer(function(data) {
+                        $.ajax({
+                            type: 'get',
+                            url: '/socket/port/heartbeat',
+                            dataType: 'json',
+                            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                            success: function(reply) {
+                                if (reply.state == "MSG") {
+                                    data.flag = false;
+                                    task.state = 'MSG';
+                                    task.msg = reply;
+                                } else {
+                                    data.flag = true;
+                                    task.state = 'OK';
+                                    task.msg = null;
+                                }
+                                callback(task);
+                            },
+                            error: function() {
+                                RosDialog.dialog.open("心跳检测异常！", 3000);
+                                data.flag = false;
+                            }
+                        });
+                    }, 2000);
+                } else {
+                    throw "参数不是 Function！";
+                }
+            },
+
+        },
 
         /**
          * 弹出对话框

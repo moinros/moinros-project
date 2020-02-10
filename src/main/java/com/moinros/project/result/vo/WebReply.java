@@ -9,7 +9,7 @@ import com.moinros.project.result.State;
  * @param <C> [content]响应内容
  * @Type View Object
  */
-public class WebReply<C> implements Reply<C> {
+public class WebReply<C> implements Reply<State, C> {
 
     /**
      * state : 响应状态

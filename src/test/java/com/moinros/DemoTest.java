@@ -1,21 +1,28 @@
 package com.moinros;
 
+import com.moinros.project.tool.email.RosSenderEmail;
+import com.moinros.project.tool.email.sub.EmailConfig;
 import com.moinros.project.tool.util.date.DateFormatUtil;
 
 import java.util.Date;
 
-/**
- * 注释:
- *
- * @Author moinros
- * @WebSite www.moinros.com
- * @Date 2020/2/3 18:20
- * @Verison 1.0
- */
 public class DemoTest {
 
     public static void main(String[] args) {
-        test2();
+        // test2();
+        EmailConfig conf = EmailConfig.getConfig();
+        conf.setConfigPath("D:/java/config/moinros-config.properties");
+        conf.init();
+
+        RosSenderEmail rse = RosSenderEmail.getRosSenderEmail();
+
+        rse.setRecipient("邮件标题", "moinros@qq.com", "邮件的文本内容");
+        rse.threadSend(() -> {
+            System.out.println("邮件发送成功时调用");
+        }, () -> {
+            System.out.println("邮件发送失败时调用");
+        });
+
     }
 
     public static void test2() {

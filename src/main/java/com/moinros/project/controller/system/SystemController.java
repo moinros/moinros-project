@@ -1,8 +1,8 @@
 package com.moinros.project.controller.system;
 
-import com.moinros.project.common.annotation.ParamIsNull;
-import com.moinros.project.common.annotation.system.MenuMark;
-import com.moinros.project.common.annotation.system.MenuTable;
+import com.moinros.project.common.annotation.tool.ParamIsNull;
+import com.moinros.project.common.annotation.web.MenuMark;
+import com.moinros.project.common.annotation.web.MenuTable;
 import com.moinros.project.model.dto.ResultValue;
 import com.moinros.project.model.pojo.Blog;
 import com.moinros.project.result.Reply;

@@ -127,7 +127,7 @@
                 type: 'post',
                 url: '/token/rsa/get/public/key',
                 dataType: 'json',
-                async: data.async == undefined || data.async == null ? false : data.async, // 默认开启同步
+                async: data.async == undefined || data.async == null ? true : data.async, // 默认不开启同步
                 success: function(reply) {
                     if (reply.state == 'success') {
                         data.success(reply.content);
@@ -148,7 +148,7 @@
 
         /**
          * RSA公钥加密
-         * @param value        密文
+         * @param value        要加密的值
          * @param publicKey    公钥
          * @returns 加密后的密文
          */
@@ -163,7 +163,7 @@
 
         /**
          * RSA公钥解密
-         * @param value    密文
+         * @param value    加密后的密文
          * @param publicKey 公钥
          * @returns 解密后的密文
          */

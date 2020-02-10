@@ -1,4 +1,4 @@
-package com.moinros.project.common.annotation;
+package com.moinros.project.common.annotation.tool;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 @Component
 public class ParamIsNullAspect {
 
-    @Pointcut(value = "@annotation(com.moinros.project.common.annotation.ParamIsNull)")
+    @Pointcut(value = "@annotation(com.moinros.project.common.annotation.tool.ParamIsNull)")
     public void paramPointCut() {
     }
 

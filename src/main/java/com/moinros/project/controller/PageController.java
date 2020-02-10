@@ -1,5 +1,6 @@
 package com.moinros.project.controller;
 
+import com.moinros.project.common.annotation.web.PageMark;
 import com.moinros.project.model.pojo.Blog;
 import com.moinros.project.model.pojo.Friend;
 import com.moinros.project.result.sub.StrConst;
@@ -40,6 +41,7 @@ public class PageController {
      * 进入友情链接页面
      */
     @GetMapping("/friends.html")
+    @PageMark(mark = "friend", name = "友链")
     public String friend(Model model) {
         List<Friend> li = friendService.findFriend();
         model.addAttribute("friendList", li);

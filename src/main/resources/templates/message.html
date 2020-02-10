@@ -44,7 +44,7 @@
 <body>
 <div>
     <h2 th:if="${message != null}" th:text="${message.title}"></h2>
-    <h3 th:if="${message != null}"><span id="timerNumber"></span>秒后<span th:text="${message.content}"></span></h3>
+    <h3 th:if="${message != null && message.content != null}"><span id="timerNumber"></span>秒后<span th:text="${message.content}"></span></h3>
 </div>
 <p>
     <label class="bar-wrap">

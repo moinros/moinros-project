@@ -30,7 +30,6 @@
      * @returns {HTMLDivElement} 对话框DOM元素
      */
     function initBox(data) {
-        RosDialog.dialog.close();
         var wraps = document.getElementsByClassName('dialog-wrap');
         var dialog = document.createElement('div');
         if (wraps != undefined && wraps != null && wraps.length > 0) {
@@ -38,7 +37,6 @@
         } else {
             dialog.id = 'dialog_1';
         }
-        RosDialog.item.add(dialog.id);
         dialog.className = 'dialog-wrap';
         var box = document.createElement('div');
         if (data.boxName != undefined && data.boxName != null && data.boxName != '') {
@@ -80,20 +78,6 @@
      * @type {{dialog: {slider: slider, wait: (function(*=): function(...[*]=)), login: login, close: close, open: open}, item: {add: add, remove: remove}}}
      */
     const RosDialog = {
-        item: {
-            add: function(id) {
-                DialogItem.push(id);
-            },
-            remove: function(id) {
-                if (id != undefined && id != null && id != '') {
-                    for (var i = 0; i < DialogItem.length; i++) {
-                        if (DialogItem[i] == id) {
-                            DialogItem[i].remove(i);
-                        }
-                    }
-                }
-            }
-        },
 
         // 内置对话框
         dialog: {
@@ -108,6 +92,39 @@
                 }
                 if (box != undefined && box != null && box.parentNode != null) {
                     box.parentNode.removeChild(box);
+                }
+            },
+
+            /**
+             * 在屏幕右下角弹出消息框
+             * @param text
+             * @param time
+             */
+            msg: function(text, time) {
+                var dialog = document.createElement("div");
+                dialog.className = "dialog-box message-text";
+                dialog.appendChild(buildCloseBox(dialog));
+                var content = document.createElement("div");
+                content.className = "dialog-content";
+                if (text == undefined || text == null) {
+                    text = "网络故障！";
+                    content.innerHTML = text;
+                } else if (text == '') {
+                    text = '服务器拒绝了你的请求！';
+                    content.innerHTML = text;
+                } else if ($C.fns.isFunction(text)) {
+                    content.appendChild(text);
+                } else {
+                    content.innerHTML = text;
+                }
+                dialog.appendChild(content);
+                document.body.appendChild(dialog);
+
+                // 设置自动关闭对话框的函数，如果没有设置，对话框则一直存在
+                if (time != undefined && time != null && time != '' && time > 0) {
+                    setTimeout(function() {
+                        RosDialog.dialog.close(dialog);
+                    }, time);
                 }
             },
 
@@ -127,10 +144,10 @@
                     content: function() {
                         // '网络故障！'
                         var content = document.createElement("div");
-                        if (text == undefined) {
+                        if (text == undefined || text == null) {
                             text = "网络故障！";
                             content.innerHTML = text;
-                        } else if (text == null) {
+                        } else if (text == '') {
                             text = '服务器拒绝了你的请求！';
                             content.innerHTML = text;
                         } else if ($C.fns.isFunction(text)) {
@@ -249,18 +266,17 @@
                         return loginForm;
                     },
                     button: function() {
-                        var link = document.createElement('a');
-                        link.className = 'box-link';
-                        link.innerHTML = "账号注册";
-                        link.href = '/register';
+                        var link = document.createElement('div');
+                        link.innerHTML = "<a class='box-link' href='/register' target='_blank'>账号注册</a><a class='box-link' href='/login/find-password' target='_blank' style='float: right'>找回密码</a>";
                         return link;
                     }
                 });
 
-                // 为form表单组件绑定函数
-                $C.bindEvent.add(usernameInput, 'oninput', $C.fns.clearBlank);
-                $C.bindEvent.add(passwrodinput, 'oninput', $C.fns.clearBlank);
-                $C.bindEvent.add(submitButton, 'onclick', function() {
+
+                /**
+                 * 提交表单数据
+                 */
+                function submitForm() {
                     var username = usernameInput.value;
                     var password = passwrodinput.value;
                     var uf = $C.fns.paramIsNull(usernameInput, function(e, f) {
@@ -292,34 +308,64 @@
                             if (formState) {
                                 formState = false;
                                 //console.log(userdata);
-                                $.ajax({
-                                    type: 'post',
-                                    url: '/login',
-                                    data: userdata,
-                                    dataType: 'json',
-                                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
-                                    success: function(reply) {
-                                        formState = true;
-                                        waitClose();
-                                        if (reply.state == 'success') {
-                                            // 登录成功
-                                            window.location.href = '/message.html';
+                                $C.RSA.getPublicKey({
+                                    async: true,
+                                    success: function(key) {
+                                        if (key) {
+                                            var cipher = $C.RSA.encrypt(userdata['password'], key);
+                                            userdata['password'] = cipher;
+                                            $.ajax({
+                                                type: 'post',
+                                                url: '/login',
+                                                data: userdata,
+                                                dataType: 'json',
+                                                contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                                                success: function(reply) {
+                                                    formState = true;
+                                                    waitClose();
+                                                    if (reply.state == 'success') {
+                                                        // 登录成功
+                                                        window.location.href = '/message.html';
+                                                    } else {
+                                                        RosDialog.dialog.open(reply.content, 5000);
+                                                    }
+                                                },
+                                                error: function() {
+                                                    formState = true;
+                                                    waitClose();
+                                                    RosDialog.dialog.open();
+                                                }
+                                            });
                                         } else {
-                                            RosDialog.dialog.open(reply.content, 5000);
+                                            RosDialog.dialog.open();
                                         }
+                                        formState = true;
                                     },
                                     error: function() {
                                         formState = true;
-                                        waitClose();
-                                        RosDialog.dialog.open();
+                                        RosDialog.dialog.open(null);
                                     }
                                 });
                             }
                         });
                     }
+                }
+
+                // ## 为form表单组件绑定函数 ##
+                // 为文本框绑定clearBlank(禁止输入空格)事件
+                $C.bindEvent.add(usernameInput, 'oninput', $C.fns.clearBlank);
+                $C.bindEvent.add(passwrodinput, 'oninput', $C.fns.clearBlank);
+
+                // 焦点处在账号或者密码框时按空格键提交表单数据
+                $C.bindEvent.add(usernameInput, 'onfocus', function() {
+                    $C.key.pressEnter(submitForm);
+                });
+                $C.bindEvent.add(passwrodinput, 'onfocus', function() {
+                    $C.key.pressEnter(submitForm);
                 });
 
-
+                // 点击登录按钮提交表单数据
+                $C.bindEvent.add(submitButton, 'onclick', submitForm);
             },
 
             /**

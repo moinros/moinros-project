@@ -5,13 +5,14 @@
         <div class="comment-editor clearfix">
             <p class="box-title">评论</p>
             <form id="CommentEditor">
-                <div class="comt-reply-link"><label>回复::</label><span id="comt_reply_link"></span></div>
+                <!--<div class="comt-reply-link"><label>回复::</label><span id="comt_reply_link"></span></div>-->
                 <div class="avatar-box">
                     <img class="avatar" src="/wp-content/img/user/moren.tou.jpg">
                 </div>
                 <div class="float-right">
                     <div class="editor-box">
                         <textarea class="comt-area" name="article" id="editor_box"></textarea>
+                        <div class="editor_box_tips" id="editor_box_tips"><span class="tips"></span></div>
                         <div class="comt-ctrl">
                             <a type="submit" class="button" id="EditorSubmit">评论</a>
                         </div>
@@ -24,9 +25,9 @@
                         </div>
                         <div class="center-info">
                             <ul>
-                                <li><label type="title">昵&nbsp;&nbsp;称</label><input type="text" name="nickName" placeholder="昵称（必填）" autocomplete="off"/></li>
-                                <li><label type="title">邮&nbsp;&nbsp;箱</label><input type="text" name="email" placeholder="邮箱（必填）" autocomplete="off"/></li>
-                                <li><label type="title">链&nbsp;&nbsp;接</label><input type="url" name="link" placeholder="链接（选填）" autocomplete="off"/></li>
+                                <li><label type="title">昵&nbsp;&nbsp;称</label><input id="centerNickName" type="text" name="nickName" placeholder="昵称（必填）" autocomplete="off"/><span class="tips"></span></li>
+                                <li><label type="title">邮&nbsp;&nbsp;箱</label><input id="centerEmail" type="text" name="email" placeholder="邮箱（必填）" autocomplete="off"/><span class="tips"></span></li>
+                                <li><label type="title">链&nbsp;&nbsp;接</label><input id="centerLink" type="url" name="link" placeholder="链接（选填）" autocomplete="off"/><span class="tips"></span></li>
                             </ul>
                         </div>
                     </div>
@@ -34,43 +35,5 @@
             </form>
         </div>
     </article>
-    <script>
-        (function() {
-            var form = document.getElementById('CommentEditor');
-            if (form) {
-                var editor = document.getElementById('editor_box');
-                var author = document.getElementById('comment_author_info');
-                var USERDATA = null;
-                $C.bindEvent.add(editor, 'onfocus', function() {
-                    // 判断是否登录
-                    var USER_CENTER = document.getElementById("USER_CENTER");
-                    if (!USER_CENTER) {
-                        author.style.display = 'block';
-                    } else {
-                        USERDATA = USER_CENTER.getAttribute('data');
-                    }
-                });
-                var submit = document.getElementById('EditorSubmit');
-                $C.bindEvent.add(submit, 'onclick', function() {
-                    var params =  $C.fns.getParameter(form);
-                    if (USERDATA != null) {
-
-                        console.log(params);
-                    } else {
-                        // 验证是否输入昵称和邮箱
-                        if ( $C.fns.valueIsNull(params['nickName']) &&  $C.fns.valueIsNull(params['email'])) {
-
-                        } else {
-                            RosDialog.dialog.open("你还没有登录！是否登录？", 0, function() {
-                                RosDialog.dialog.login();
-                            }, function() {
-                                author.style.display = 'block';
-                            });
-                        }
-                    }
-                })
-            }
-        })();
-    </script>
 </th:block>
 </html>

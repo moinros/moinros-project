@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hans" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" href="/wp-content/plugins/user/register.css"/>
+    <title>晓默的博客 - 用户注册</title>
+</head>
+<body id="app">
+<th:block th:replace="common/header :: header"></th:block>
+<th:block th:replace="common/focus :: focus"></th:block>
+<section>
+    <div class="central">
+        <div class="app-register">
+            <div class="title-line"><span>注册</span></div>
+            <form class="register-form" id="register_form">
+                <div class="item-line">
+                    <div><input id="box_nickname" type="text" name="nickname" autocomplete="off" placeholder="昵称"></div>
+                    <div><span class="tips"></span></div>
+                </div>
+                <div class="item-line">
+                    <div><input id="box_password" type="password" name="password" autocomplete="off" placeholder="密码"></div>
+                    <div><span class="tips"></span></div>
+                </div>
+                <div class="item-line">
+                    <div><input id="box_username" type="text" name="username" autocomplete="off" placeholder="邮箱"></div>
+                    <div><span class="tips"></span></div>
+                </div>
+                <div class="item-line">
+                    <div><input id="box_checkcode" type="text" name="checkcode" autocomplete="off" placeholder="验证码"><a data-checkcode class="button" id="get_checkcode" type="button">点击获取验证码</a> </div>
+                    <div><span class="tips"></span></div>
+                </div>
+                <div class="item-line"><a data-submit class="button" id="submit_form">注册</a></div>
+            </form>
+        </div>
+    </div>
+</section>
+<th:block th:replace="common/footer :: footer"></th:block>
+<script type="text/javascript" src="/wp-content/tool/token/jsencrypt.min.js"></script>
+<script type="text/javascript" src="/wp-content/tool/token/token.js"></script>
+<script type="text/javascript" src="/wp-content/plugins/user/register.js"></script>
+</body>
+</html>

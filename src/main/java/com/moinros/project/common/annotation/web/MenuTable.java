@@ -1,4 +1,4 @@
-package com.moinros.project.common.annotation.system;
+package com.moinros.project.common.annotation.web;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

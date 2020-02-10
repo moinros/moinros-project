@@ -3,39 +3,29 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <link rel="shortcut icon" href="/favicon.ico"/>
+    <link rel="stylesheet" type="text/css" href="/wp-content/tool/RosDialog.css"/>
     <script type="text/javascript" src="/wp-content/tool/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="/wp-content/tool/RosScript-1.0.js"></script>
     <script type="text/javascript" src="/wp-content/tool/RosDialog-1.0.js"></script>
     <script type="text/javascript" src="/wp-content/tool/main.js"></script>
     <title>晓默的博客 - test</title>
-    <style>
-      
-
-    </style>
 </head>
 <body id="app">
 <section>
     <div class="central">
-        <h2><a onclick="RosScript.dialog.login()">登录</a></h2>
-        <h2><a onclick="RosScript.dialog.open(null)">对话框</a></h2>
-        <h2><a onclick="RosScript.dialog.slider(show)">上传</a></h2>
-        <!--        <div>-->
-        <!--            <div class="slide-box">-->
-        <!--                <h2>滑动验证</h2>-->
+        <h2><a onclick="RosDialog.dialog.login()">登录</a></h2>
+        <h2><a onclick="RosDialog.dialog.open(null)">对话框</a></h2>
+        <h2><a onclick="RosDialog.dialog.msg('', 5000)">上传</a></h2>
 
-        <!--                <div class="slide-bar">-->
-        <!--                    <div class="text">将滑块滑动到右边验证</div>-->
-        <!--                    <i class="slider" id="slider"></i>-->
-        <!--                </div>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </div>-->
 </section>
 <script>
+    function slider() {
 
-    function show() {
-        console.log("回调函数");
     }
+    // $C.socket.onceTask(function(data) {
+    //     console.log(data.state + "  |  " + data.toString());
+    // });
+
 
     // var slider = document.getElementById("slider");
     // $C.bindEvent.add(slider, 'onmousedown', function(e) {

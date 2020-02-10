@@ -1,6 +1,5 @@
-package com.moinros.project.common.annotation.system;
+package com.moinros.project.common.annotation.web;
 
-import com.moinros.project.service.system.SystemService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -11,27 +10,22 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.List;
 
 /**
- * 注释: 通过注解的方式设置动态菜单的值
+ * 注释: 处理 @PageMark 的AOP切面类
  *
  * @Author moinros
- * @WebSite www.moinros.com
- * @Date 2020/1/30 23:44
+ * @Date 2020/2/9 21:40
  * @Verison 1.0
  */
 @Aspect
 @Component
-public class MenuAspect {
+public class PageMarkAspect {
 
     @Autowired
     private HttpServletRequest request;
 
-    @Autowired
-    private SystemService service;
-
-    @Pointcut(value = "@annotation(com.moinros.project.common.annotation.system.MenuTable)")
+    @Pointcut(value = "@annotation(com.moinros.project.common.annotation.web.PageMark)")
     public void pageMarkPointCut() {
     }
 
@@ -40,14 +34,15 @@ public class MenuAspect {
         // 获取切面方法
         Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         // 获取方法上定义的注解
-        MenuTable pm = method.getAnnotation(MenuTable.class);
+        PageMark pm = method.getAnnotation(PageMark.class);
         if (pm != null) {
-            for (int i = 0; i < pm.value().length; i++) {
-                List list = service.findMenuSon(pm.value()[i].mark());
-                if (list != null) {
-                    request.setAttribute(pm.value()[i].name(), list);
-                }
-            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("{'mark':'");
+            sb.append(pm.mark());
+            sb.append("','name':'");
+            sb.append(pm.name());
+            sb.append("'}");
+            request.setAttribute("PAGE_MARK", sb.toString());
         }
     }
 
