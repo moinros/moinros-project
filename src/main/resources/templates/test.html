@@ -13,15 +13,14 @@
 <body id="app">
 <section>
     <div class="central">
-        <h2><a onclick="RosDialog.dialog.login()">登录</a></h2>
+        <h2><a onclick="RosDialog.dialog.login()">登录框</a></h2>
         <h2><a onclick="RosDialog.dialog.open(null)">对话框</a></h2>
-        <h2><a onclick="RosDialog.dialog.msg('', 5000)">上传</a></h2>
+        <h2><a onclick="RosDialog.dialog.msg('', 5000)">消息框</a></h2>
+        <h2><a onclick="RosDialog.dialog.slider(function() {
 
+        })">验证条</a></h2>
 </section>
 <script>
-    function slider() {
-
-    }
     // $C.socket.onceTask(function(data) {
     //     console.log(data.state + "  |  " + data.toString());
     // });

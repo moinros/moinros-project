@@ -16,7 +16,6 @@ import com.moinros.project.service.other.FriendService;
 import com.moinros.project.tool.email.RosSenderEmail;
 import com.moinros.project.tool.email.bean.Recipient;
 import com.moinros.project.tool.email.sub.ReadHtmlFile;
-import com.moinros.project.tool.util.string.RegexString;
 import com.moinros.project.tool.util.string.RegexUtil;
 import com.moinros.project.tool.util.string.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +89,7 @@ public class ComtController {
         if (user == null) {
             if (nickName != null && email != null) {
                 // 匹配邮箱的正则表达式
-                if (RegexUtil.equalsRegex(RegexString.REGEX_EMAIL, email)) {
+                if (RegexUtil.equalsRegex(RegexUtil.REGEX_EMAIL, email)) {
                     // 生成24位的随机密码
                     String password = StringUtil.getRandomChar(StrConst.SEQUENCE, 24);
                     ResultValue<UserServiceState, UserData> rv = userService.register(nickName, email, password);

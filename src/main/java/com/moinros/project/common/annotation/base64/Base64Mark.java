@@ -21,5 +21,5 @@ public @interface Base64Mark {
      * 注释: 修饰字段时字段是否能为空值,默认可以为空<br>
      * 默认可以为空,设置为false时如果注解字段如果为null则抛出异常
      */
-    public boolean fieldIsNull() default true;
+    boolean fieldIsNull() default true;
 }

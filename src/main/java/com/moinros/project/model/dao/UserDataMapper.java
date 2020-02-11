@@ -24,6 +24,12 @@ public interface UserDataMapper {
     @SelectProvider(method = "selectUserDataSQL", type = UserDataSqlProvider.class)
     UserData selectUser(UserData userdata);
 
+    @Select("SELECT `user_id` FROM `user_data` WHERE `user_name` = #{email} OR `user_email` = #{email}")
+    Integer selectEmailEx(String email);
+
+    @Select("SELECT `user_id` FROM `user_data` WHERE `nick_name` = #{nickName}")
+    Integer selectNickNameEx(String nickName);
+
     /**
      * 注释: 根据邮箱查询user数据
      *

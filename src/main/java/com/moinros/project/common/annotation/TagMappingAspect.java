@@ -28,10 +28,6 @@ public class TagMappingAspect {
     public void typePointCut() {
     }
 
-    /**
-     * 环绕增强<br>
-     * 注释: 对注有@Base64Encoder注解的参数进行Base64编码
-     */
     @AfterReturning(value = "typePointCut()", returning = "result")
     public void afterInMethod(JoinPoint joinPoint, Object result) {
         if (result != null) {

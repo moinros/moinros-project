@@ -1,11 +1,11 @@
 package com.moinros.project.model.dto.enums;
 
 /**
- * 类注释: 匹配邮箱验证码时可能出现的异常状态枚举
+ * 注释: 匹配邮箱验证码时可能出现的异常状态枚举
  *
- * @Author moinros
- * @Date 2019年12月20日 下午11:35:51
- * @Version 1.0
+ * @Auther: moinros
+ * @WebSite www.moinros.com
+ * @Date: 2020/2/11 18:21
  */
 public enum CheckcodeState {
 

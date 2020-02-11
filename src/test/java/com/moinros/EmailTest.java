@@ -1,6 +1,8 @@
 package com.moinros;
 
+import com.moinros.project.result.sub.StrConst;
 import com.moinros.project.tool.email.sub.ReadHtmlFile;
+import com.moinros.project.tool.util.string.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +16,10 @@ import java.util.Map;
  */
 public class EmailTest {
     public static void main(String[] args) {
+        String checkcode = StringUtil.getRandomChar(StrConst.SEQUENCE, 10);
         Map map = new HashMap();
-        map.put("${link}", "verify");
-        String html = ReadHtmlFile.readHtmlFile("static/template/mail-register.html", map);
+        map.put("${checkcode}", checkcode);
+        String html = ReadHtmlFile.readHtmlFile("static/template/mail-checkcode.html", map);
         System.out.println(html);
     }
 }

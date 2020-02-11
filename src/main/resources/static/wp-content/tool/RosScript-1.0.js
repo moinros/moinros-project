@@ -4,11 +4,22 @@
 (function() {
 
     const RosScript = {
+        ajax: {
+            contentType: {
+                json: 'application/json;charset=utf-8',
+                form: 'application/x-www-form-urlencoded;charset=utf-8',
+            },
+        },
+        /**
+         * 常用的正则表达式
+         */
         regex: {
             // 匹配任意非空白字符,并且不能是纯数字,不能由任意单个重复字符组成;
             nickname: /^(?!(.)\1+$)(?!\d+$)[^\s]+$/,
             // 匹配邮箱的正则表达式
             email: /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/,
+            // 匹配手机号
+            phone: /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/,
             // 匹配密码的正则表达式
             password: /^(?!(.)\1+$)(?!\d+$)[^\s]+$/,
             // 匹配空格的正则表达式
@@ -17,8 +28,50 @@
             repeated: /^(.)\1+$/,
             // 匹配纯数字
             number: /^\d+$/,
-            url: /^(https?|ftp|file):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/,
+            // 匹配URL地址
+            url: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
+            // 匹配IP地址
+            ip: /((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)/,
+            // 匹配HTML标签
+            html: /^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)$/,
+            /** 删除代码中的 // 后的注释*/
+            deleteComment: /(?<!http:|\S)\/\/.*$/,
         },
+
+        /**
+         * 与DOM相关的方法
+         */
+        dom: {
+
+            /**
+             * 判断参数是否为DOM元素
+             * @param obj
+             * @returns {boolean}
+             */
+            isDom: function(obj) {
+                if (typeof HTMLElement === 'object') {
+                    return obj instanceof HTMLElement;
+                } else {
+                    return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+                }
+            },
+
+            /**
+             * 判断元素是否为目标元素的子元素;是返回true,不是则返回false
+             * @param ele 元素
+             * @param target 目标元素
+             * @returns {boolean}
+             */
+            isTargetSon: function(ele, target) {
+                //ele是内部元素，target是你想找到的包裹元素
+                if (!ele || ele === document) return false;
+                return ele === target ? true : RosScript.dom.isTargetSon(ele.parentNode, target);
+            },
+        },
+
+        /**
+         * 与键盘相关的方法
+         */
         key: {
             /**
              * 按下'回车键'后执行指定方法
@@ -32,6 +85,87 @@
             },
         },
 
+        /**
+         * 与鼠标相关的方法
+         */
+        mouse: {
+            /**
+             * 绑定全局的鼠标点击事件
+             */
+            down: {
+                number: 0,
+                /**
+                 * 存放事件的列表
+                 */
+                list: new Array(),
+
+                /**
+                 * 添加一个全局的鼠标点击事件.参数格式
+                 * {
+                 *     key: 'functionName', // 函数名
+                 *     value: function(){}, // 函数本体
+                 * }
+                 * @param item 参数
+                 */
+                add: function(item) {
+
+                    if (RosScript.fns.valueIsNull(item.key)) {
+                        if ($C.fns.isFunction(item.value)) {
+                            let li = RosScript.mouse.down.list;
+                            let flag = true;
+                            for (let i = 0; i < li.length; i++) {
+                                if (li[i] == item.key) {
+                                    flag = false;
+                                    throw "[ " + item.key + " ] 已经存在！";
+                                }
+                            }
+
+                            if (flag) {
+                                RosScript.mouse.down.list.push(item);
+                                RosScript.mouse.down.number++;
+                                // 绑定了一次函数后初始化
+                                if (RosScript.mouse.down.number == 1) {
+                                    window.addEventListener('mousedown', function(obj) {
+                                        //    console.log("按下鼠标");
+                                        RosScript.mouse.down.run(obj);
+                                    }, false);
+                                }
+                            }
+                        } else {
+                            throw "item.value 不是函数！";
+                        }
+                    } else {
+                        throw "绑定事件的函数名不能为空！";
+                    }
+                },
+
+                /**
+                 * 查找指定key的函数
+                 * @param key
+                 */
+                find: function(key) {
+                    if (RosScript.fns.valueIsNull(key)) {
+                        for (let i = 0; i < RosScript.mouse.down.list.length; i++) {
+                            if (RosScript.mouse.down.list[i].key === key) {
+                                return RosScript.mouse.down.list[i].value;
+                            }
+                        }
+                    } else {
+                        return null;
+                    }
+                },
+
+                /**
+                 * 按照添加顺序运行绑定的全部函数
+                 * @param obj 鼠标当前点击的{MouseEvent}对象
+                 */
+                run: function(obj) {
+                    for (let i = 0; i < RosScript.mouse.down.list.length; i++) {
+                        RosScript.mouse.down.list[i].value(obj);
+                    }
+                },
+            },
+        },
         /**
          * 定义一些常用的公用方法
          */
@@ -52,30 +186,44 @@
 
             /**
              * 判断是否为function
-             * @param fn
-             * @returns {boolean}
+             * @param fn [function]函数
+             * @returns boolean true OR false
              */
             isFunction: function(fn) {
                 return typeof fn === 'function';
                 // return Object.prototype.toString.call(fn) === '[object Function]';
             },
-
+            /**
+             * 判断参数是否为[function]函数,是就运行
+             * @param fn [function]函数
+             */
+            runFunction: function(fn) {
+                if (typeof fn === 'function') {
+                    fn();
+                }
+            },
             /**
              * 定时器
              * @param fn 需要执行的函数
              * @param index 执行的次数
              * @param time 每次执行的间隔时间,默认1000
              */
-            timer: function(fn, index) {
-                fn(index, flag);
-                index--;
-                if (index >= 0) {
-                    setTimeout(function() {
-                        RosScript.fns.timer(fn, index);
-                    }, 1000);
-                } else {
-                    fn(index, flag);
+            timer: function(fn, index, time) {
+                if (time) {
+                    time = 1000;
                 }
+
+                function heartbeat(fn, index, time) {
+                    fn(index);
+                    index--;
+                    if (index >= 0) {
+                        setTimeout(function() {
+                            heartbeat(fn, index, time);
+                        }, time);
+                    }
+                }
+
+                heartbeat(fn, index, time);
             },
 
             /**
@@ -146,11 +294,11 @@
              * @Param c [Callback]回调函数
              */
             paramIsNull: function(e, c) {
-                var f = false;
+                let f = false;
                 if (e == undefined || e == null) {
                     return f;
                 }
-                var v = e.value;
+                let v = e.value;
                 if (v != undefined && v != null && v != '') {
                     f = true;
                 }
@@ -160,7 +308,7 @@
                 return f;
             },
             /**
-             * 验证参数是否为空值,忽略空格
+             * 验证参数是否为空值,包括多个空格
              * @param v value值
              * @returns {boolean}
              */
@@ -175,8 +323,15 @@
                 return true;
             },
 
-            showImage: function(e) {
-                var url = e.getAttribute('title');
+            /**
+             * 在新的页面打开图片[指定[URL,默认从title获取]
+             * @param e
+             */
+            showImage: function(e, attr) {
+                if (attr) {
+                    attr = 'title';
+                }
+                let url = e.getAttribute(attr);
                 if (url != undefined && url != null && url != '') {
                     window.open(url);
                 }
@@ -186,8 +341,8 @@
              * 获取验证码图片
              */
             getCheckCodeImg: function(e) {
-                var src = e.src;
-                var index = src.indexOf('?');
+                let src = e.src;
+                let index = src.indexOf('?');
                 e.src = (index > -1 ? src.slice(0, index) : src) + '?' + (Date.now() / 10);
             },
 
@@ -199,9 +354,9 @@
              * @Return obj{}
              */
             getParameter: function(form) {
-                var item = form.getElementsByTagName('input');
-                var obj = {};
-                for (var i = 0; i < item.length; i++) {
+                let item = form.getElementsByTagName('input');
+                let obj = {};
+                for (let i = 0; i < item.length; i++) {
                     if (item[i].type == "text"
                         || item[i].type == "password"
                         || item[i].type == "select-one"
@@ -218,9 +373,9 @@
                         || item[i].type == "color") {
                         obj[item[i].name] = item[i].value;
                     } else if (item[i].type == "checkbox") {
-                        var stamp = true;
+                        let stamp = true;
                         if (item[i].checked) {
-                            for (var n in obj) {
+                            for (let n in obj) {
                                 if (n == item[i].name) {
                                     obj[n].push(item[i].value);
                                     stamp = false;
@@ -237,15 +392,15 @@
                         }
                     }
                 }
-                var textItem = form.getElementsByTagName('textarea');
+                let textItem = form.getElementsByTagName('textarea');
                 if (textItem != undefined && textItem != null) {
-                    for (var i = 0; i < textItem.length; i++) {
+                    for (let i = 0; i < textItem.length; i++) {
                         obj[textItem[i].name] = textItem[i].value;
                     }
                 }
-                var selectItem = form.getElementsByTagName('select');
+                let selectItem = form.getElementsByTagName('select');
                 if (selectItem != undefined && selectItem != null) {
-                    for (var i = 0; i < selectItem.length; i++) {
+                    for (let i = 0; i < selectItem.length; i++) {
                         obj[selectItem[i].name] = selectItem[i].value;
                     }
                 }
@@ -351,7 +506,7 @@
              */
             init: function(data) {
                 var allbox = document.getElementsByClassName('dialog-wrap');
-                var boxid = '';
+                let boxid = '';
                 if (allbox != undefined && allbox != null && allbox.length > 0) {
                     boxid = 'dialog' + allbox.length + 1;
                 } else {
@@ -359,22 +514,22 @@
                 }
 
                 // 初始化对话框DOM对象
-                var dialog = document.createElement('div');
+                let dialog = document.createElement('div');
                 dialog.id = boxid;
                 dialog.className = 'dialog-wrap';
 
-                var dialogBox = document.createElement('div');
+                let dialogBox = document.createElement('div');
                 dialogBox.className = 'dialog-box';
 
-                var closeBox = document.createElement('div');
+                let closeBox = document.createElement('div');
                 closeBox.className = 'dialog-close';
-                var close = document.createElement('i');
+                let close = document.createElement('i');
                 close.className = 'close';
                 close.innerHTML = "<i></i>";
                 closeBox.appendChild(close);
                 dialogBox.appendChild(closeBox);
 
-                var contentBox = document.createElement('div');
+                let contentBox = document.createElement('div');
                 contentBox.className = 'dialog-content';
                 if (data.content == undefined) {
                     contentBox.innerHTML = '网络故障！';
@@ -385,13 +540,13 @@
                 }
                 dialogBox.appendChild(contentBox);
 
-                var buttonBox = document.createElement('div');
+                let buttonBox = document.createElement('div');
                 buttonBox.className = 'dialog-button';
-                var confirmButton = document.createElement('button');
+                let confirmButton = document.createElement('button');
                 confirmButton.type = 'button';
                 confirmButton.className = 'box-button yes';
                 confirmButton.innerHTML = '确认';
-                var closeButton = document.createElement('button');
+                let closeButton = document.createElement('button');
                 closeButton.type = 'button';
                 closeButton.className = 'box-button no';
                 closeButton.innerHTML = '取消';
@@ -471,7 +626,7 @@
              *            关闭对话框时运行的函数
              */
             close: function(id) {
-                var div = document.getElementById(id);
+                let div = document.getElementById(id);
                 if (div != undefined && div != null) {
                     div.parentNode.removeChild(div);
                 }
@@ -482,7 +637,7 @@
              * @returns {function(...[*]=)} // 返回了一个无参数的回调函数，用于关闭此模块，可以将此回调函数放入上传文件的回调函数中，文件上传结束时调用，关闭此模块。
              */
             wait: function(content) {
-                var text = '';
+                let text = '';
                 if (content != undefined && content != null) {
                     text = content;
                 }
@@ -498,22 +653,22 @@
 
         login: {
             close: function() {
-                var box = document.getElementById('loginDialog');
+                let box = document.getElementById('loginDialog');
                 if (box != undefined && box != null) {
                     box.parentNode.removeChild(box);
                 }
             },
             dialog: function() {
                 RosScript.login.close();
-                var dialog = document.createElement('div');
+                let dialog = document.createElement('div');
                 dialog.id = 'loginDialog';
                 dialog.className = 'dialog-wrap';
-                var box = document.createElement('div');
+                let box = document.createElement('div');
                 box.className = 'dialog-box';
                 // 添加close条
                 box.appendChild(RosScript.login.closeBar(dialog));
 
-                var contentBox = document.createElement('div');
+                let contentBox = document.createElement('div');
                 contentBox.className = "content-box";
                 box.appendChild(contentBox);
 
@@ -522,9 +677,9 @@
             },
 
             closeBar: function(box) {
-                var closeBox = document.createElement('div');
+                let closeBox = document.createElement('div');
                 closeBox.className = 'dialog-close';
-                var close = document.createElement('i');
+                let close = document.createElement('i');
                 close.className = 'close';
                 close.innerHTML = "<i></i>";
                 closeBox.appendChild(close);
@@ -545,48 +700,48 @@
             data: null,
             formState: true,
             close: function() {
-                var box = document.getElementById('uploadDialog');
+                let box = document.getElementById('uploadDialog');
                 if (box != undefined && box != null) {
                     box.parentNode.removeChild(box);
                 }
             },
             dialog: function(callback) {
                 RosScript.upload.close();
-                var dialog = document.createElement('div');
+                let dialog = document.createElement('div');
                 dialog.id = 'uploadDialog';
                 dialog.className = 'upload-dialog';
-                var background = document.createElement('div');
+                let background = document.createElement('div');
                 background.className = 'u-d-background';
                 dialog.appendChild(background);
-                var wrap = document.createElement('div');
+                let wrap = document.createElement('div');
                 wrap.className = 'u-d-wrap';
                 background.appendChild(wrap);
-                var form = document.createElement('form');
+                let form = document.createElement('form');
                 form.innerHTML = "<img id='_u_d_image' src=''>";
-                var closeBox = document.createElement('i');
+                let closeBox = document.createElement('i');
                 closeBox.className = 'close';
-                var close = document.createElement('i');
+                let close = document.createElement('i');
                 RosScript.bindEvent.add(closeBox, 'onclick', function() {
                     dialog.parentNode.removeChild(dialog);
                 });
-                var closeBar = document.createElement('div');
+                let closeBar = document.createElement('div');
                 closeBar.className = 'close-bar';
                 closeBar.innerHTML = "图片上传";
                 closeBox.appendChild(close);
                 closeBar.appendChild(closeBox);
                 wrap.appendChild(closeBar);
                 wrap.appendChild(form);
-                var input = document.createElement('input');
+                let input = document.createElement('input');
                 input.type = 'file';
                 input.name = 'file';
-                var button = document.createElement('button');
+                let button = document.createElement('button');
                 button.type = 'button';
                 button.innerHTML = '上传';
                 form.appendChild(input);
                 form.appendChild(button);
                 document.body.appendChild(dialog);
                 RosScript.bindEvent.add(input, 'onchange', function() {
-                    var file = this.files[0];
+                    let file = this.files[0];
                     if ((file.type).indexOf("image/") <= -1) {
                         RosScript.dialog.init({
                             content: '你选择的文件不是图片哦~',
@@ -594,7 +749,7 @@
                         });
                         return;
                     }
-                    var base64 = new FileReader();
+                    let base64 = new FileReader();
                     base64.readAsDataURL(file);
                     base64.onload = function() {
                         document.getElementById('_u_d_image').src = base64.result;
@@ -605,7 +760,7 @@
                  * 上传图片
                  */
                 RosScript.bindEvent.add(button, 'onclick', function() {
-                    var file = input.files[0];
+                    let file = input.files[0];
                     if (file == undefined || file == null || file == '') {
                         RosScript.dialog.init({
                             content: '请先选择图片再上传！',
@@ -621,10 +776,10 @@
                         return;
                     } else {
                         if (input.value != undefined && input.value != null && input.value != '') {
-                            var formdata = new FormData(form);
+                            let formdata = new FormData(form);
                             if (RosScript.upload.formState) {
                                 RosScript.upload.formState = false;
-                                var waitClose = RosScript.dialog.wait('图片上传中···');
+                                let waitClose = RosScript.dialog.wait('图片上传中···');
                                 $.ajax({
                                     type: "post",
                                     url: "https://www.server-file.com/file/server/upload",
@@ -668,7 +823,7 @@
      */
     RosScript.fns.getSub = function(e, className) {
         // 在子元素中查找
-        var son = getSon(e, className);
+        let son = getSon(e, className);
         if (son != null) {
             return son;
         }
@@ -677,14 +832,14 @@
     };
 
     function getSibling(e, n) {
-        var brother = e.nextElementSibling; // 获取下一个兄弟元素
+        let brother = e.nextElementSibling; // 获取下一个兄弟元素
         if (brother == undefined || brother == null) {
             return null;
         }
         if (getIsNull(brother, n)) {
             return brother;
         }
-        var son = getSon(brother, n);
+        let son = getSon(brother, n);
         if (son != null) {
             return son;
         }
@@ -701,7 +856,7 @@
     }
 
     function getSon(e, n) {
-        var son = e.firstElementChild;
+        let son = e.firstElementChild;
         if (son == undefined || son == null) {
             return null;
         } else {
@@ -709,7 +864,7 @@
                 return son;
             }
         }
-        var brother = getSibling(son, n);
+        let brother = getSibling(son, n);
         if (brother != null) {
             return brother;
         }

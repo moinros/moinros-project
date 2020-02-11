@@ -18,10 +18,10 @@ public @interface Base64EncoderParam {
     /**
      * 注释: 指定参数名字
      */
-    public String name();
+    String name();
 
     /**
      * 注释: 指定参数类型
      */
-    public Class<?> type();
+    Class<?> type();
 }

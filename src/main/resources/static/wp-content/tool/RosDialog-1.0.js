@@ -39,10 +39,13 @@
         }
         dialog.className = 'dialog-wrap';
         var box = document.createElement('div');
-        if (data.boxName != undefined && data.boxName != null && data.boxName != '') {
+        if ($C.fns.valueIsNull(data.boxName)) {
             box.className = 'dialog-box ' + data.boxName;
         } else {
             box.className = 'dialog-box';
+        }
+        if ($C.fns.valueIsNull(data.boxId)) {
+            box.id = data.boxId;
         }
         // 添加close条
         box.appendChild(buildCloseBox(dialog, data.title, data.closeMethod));
@@ -206,16 +209,22 @@
              * 弹出登录框
              */
             login: function() {
-                var usernameInput;
-                var passwrodinput;
-                var submitButton;
-                var formList;
-                var formState = true;
+                // 判断是否已经存在登录框,有则先关闭
+                let loginBox = document.getElementById('DIALOG_LOGIN_BOX');
+                if (loginBox) {
+                    RosDialog.dialog.close(loginBox.parentNode);
+                }
+                var usernameInput; // 账号文本框
+                var passwrodinput; // 密码文本框
+                var submitButton; // 提交按钮文本框
+                var formList; // form表单
+                var formState = true; // 表单状态
 
                 // 初始化登录框
                 initBox({
                     title: '登录',
                     boxName: 'login-box',
+                    boxId: 'DIALOG_LOGIN_BOX',
                     content: function() {
                         var loginForm = document.createElement('form');
                         loginForm.className = 'login-form';
@@ -437,7 +446,7 @@
              * 弹出等待层，防止用户在客户端请求服务器时进行某些操作。例如上传文件时弹出此模块，防止用户干扰上传过程。
              * @returns {function(...[*]=)} // 返回了一个无参数的回调函数，用于关闭此模块，可以调用此函数关闭等待层
              */
-            wait: function(content) {
+            wait: function() {
                 // var text = '';
                 // if (content != undefined && content != null) {
                 //     text = content;

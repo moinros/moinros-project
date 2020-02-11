@@ -19,6 +19,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface Base64Encoder {
 
-    public Base64EncoderParam[] param() default {};
+    Base64EncoderParam[] param() default {};
 
 }

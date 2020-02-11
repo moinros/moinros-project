@@ -15,14 +15,14 @@ import java.lang.annotation.*;
  * @Date 2019年12月13日 下午9:04:35
  * @Version 1.0
  */
-@Target({ ElementType.METHOD, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME) // 运行时注解
 @Documented
 public @interface Base64Decoder {
 
-	/**
-	 * 注释: 标注是否执行解码操作,默认为true<br>
-	 * 设置为false时表示忽略该切点方法
-	 */
-	public boolean exclude() default true;
+    /**
+     * 注释: 标注是否执行解码操作,默认为true<br>
+     * 设置为false时表示忽略该切点方法
+     */
+    boolean exclude() default true;
 }

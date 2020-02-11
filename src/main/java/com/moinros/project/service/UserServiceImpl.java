@@ -95,11 +95,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean mailboxExist(String userEmail) {
+        Integer id = mapper.selectEmailEx(userEmail);
+        if (id != null && id.intValue() > 1) {
+            return true;
+        }
         return false;
     }
 
     @Override
+    @Base64Encoder(param = {@Base64EncoderParam(name = "nickname", type = String.class)})
     public boolean nicknameExist(String nickname) {
+        Integer id = mapper.selectNickNameEx(nickname);
+        if (id != null && id.intValue() > 1) {
+            return true;
+        }
         return false;
     }
 

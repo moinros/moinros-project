@@ -1,7 +1,6 @@
 package com.moinros.config.web.interceptor;
 
 import com.moinros.project.result.sub.StrConst;
-import com.moinros.project.tool.util.string.RegexString;
 import com.moinros.project.tool.util.string.RegexUtil;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -24,7 +23,7 @@ public class UserInterceptor implements HandlerInterceptor {
         // System.out.println(">> 进入拦截器 - UserInterceptor");
         HttpSession session = request.getSession();
         String uri = request.getRequestURI();
-        boolean f = RegexUtil.equalsRegex(RegexString.REGEX_URI_USERDATA, uri);
+        boolean f = RegexUtil.equalsRegex(RegexUtil.REGEX_URI_USERDATA, uri);
         if (f) {
             return true;
         }

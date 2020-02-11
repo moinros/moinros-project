@@ -7,7 +7,6 @@
         formState: true,
     };
 
-    const form = document.getElementById("register_form");
 
     /**
      * 请求服务器
@@ -27,7 +26,7 @@
                 },
                 error: function() {
                     RosDialog.dialog.open();
-                    error();
+                    $C.fns.runFunction(error);
                 }
             });
         }
@@ -53,14 +52,14 @@
                         if (data.state == 'OK') {
                             $C.fns.setTips(tips_nickname, 'tips', '验证通过！', true);
                             FORM_STATE.nickname = true;
-                            if ($C.fns.isFunction(callback)) {
-                                callback();
-                            }
+                            $C.fns.runFunction(callback);
                         } else {
-                            $C.fns.setTips(tips_nickname, 'tips', '昵称已经存在！', false);
+                            $C.fns.setTips(tips_nickname, 'tips', data.content, false);
                             FORM_STATE.nickname = false;
                         }
                     });
+                } else {
+                    $C.fns.runFunction(callback);
                 }
             } else {
                 $C.fns.setTips(tips_nickname, 'tips', '昵称只能由 2 ~ 24 个字符组成！', false);
@@ -92,14 +91,14 @@
                         if (data.state == 'OK') {
                             $C.fns.setTips(tips_username, 'tips', '验证通过！', true);
                             FORM_STATE.username = true;
-                            if ($C.fns.isFunction(callback)) {
-                                callback();
-                            }
+                            $C.fns.runFunction(callback);
                         } else {
-                            $C.fns.setTips(tips_username, 'tips', '邮箱已经注册！', false);
+                            $C.fns.setTips(tips_username, 'tips', data.content, false);
                             FORM_STATE.username = false;
                         }
                     });
+                } else {
+                    $C.fns.runFunction(callback);
                 }
             } else {
                 $C.fns.setTips(tips_username, 'tips', '邮箱格式不正确！', false);
@@ -124,7 +123,7 @@
     function verifyPassword() {
         let str = box_password.value;
         if ($C.fns.valueIsNull(str)) {
-            if (str.length > 7 && str.length < 25) {
+            if (str.length > 5 && str.length < 25) {
                 if ($C.regex.password.test(str)) {
                     $C.fns.setTips(tips_password, 'tips', '验证通过！', true);
                     FORM_STATE.password = true;
@@ -133,7 +132,7 @@
                     FORM_STATE.password = false;
                 }
             } else {
-                $C.fns.setTips(tips_password, 'tips', '密码最少8位，最多24位！', false);
+                $C.fns.setTips(tips_password, 'tips', '密码最少6位，最多24位！', false);
                 FORM_STATE.password = false;
             }
         } else {
@@ -160,7 +159,7 @@
         let str = box_username.value;
         if ($C.fns.valueIsNull(str)) {
             if (FORM_STATE.username) {
-                console.log("获取验证码");
+                //console.log("获取验证码");
                 if (check) {
                     check = false;
                     $C.fns.loopTimer(function(data) {
@@ -169,6 +168,7 @@
                             get_checkcode.innerHTML = 60 - data.index + '秒后再次获取';
                         } else {
                             get_checkcode.className = "button";
+                            get_checkcode.innerHTML = '点击获取验证码';
                             data.flag = false;
                             check = true;
                         }
@@ -222,11 +222,42 @@
         if (FORM_STATE.nickname && FORM_STATE.username && FORM_STATE.password && FORM_STATE.checkcode) {
             if (FORM_STATE.formState) {
                 FORM_STATE.formState = false;
-                console.log("提交表单数据");
+                RosDialog.dialog.slider(function() {
+                    let closeWait = RosDialog.dialog.wait();
+                    console.log("提交表单数据");
+                    $.ajax({
+                        type: 'post',
+                        url: '',
+                        data: params,
+                        dataType: 'json',
+                        contentType: $C.ajax.contentType.form,
+                        success: function(reply) {
+                            FORM_STATE.formState = true;
+                            closeWait();
+                            if (reply.state == 'success') {
+                                // 注册成功
+                                window.location.href = '/message.html';
+                            } else {
+                                RosDialog.dialog.msg(reply.content, 10000);
+                            }
+                        },
+                        error: function() {
+                            FORM_STATE.formState = true;
+                            closeWait();
+                            RosDialog.dialog.open();
+                        }
+                    });
+                });
             }
         }
         console.log(params);
     }
 
-
+    const form = document.getElementById("register_form");
+    let inputs = form.getElementsByTagName('input');
+    for (let i = 0; i < inputs.length; i++) {
+        $C.bindEvent.add(inputs[i], 'onfocus', function() {
+            $C.key.pressEnter(verifyParams);
+        });
+    }
 })();

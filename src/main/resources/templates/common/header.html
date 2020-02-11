@@ -19,11 +19,14 @@
                 </div>
                 <div class="search-box float-right">
                     <form action="/search" method="get">
-                        <input type="text" name="value" placeholder="输入关键字搜索"><button class="button" type="submit">搜索</button>
+                        <input type="text" name="value" placeholder="输入关键字搜索">
+                        <button class="button" type="submit">搜索</button>
                     </form>
                 </div>
                 <div class="nav-user-center" th:if="${session.USER_DATA != null}">
-                    <a class="user-img" id="USER_CENTER" title="晓默" th:data="|({'uid':'${session.USER_DATA.userId}','name':'${session.USER_DATA.nickName}','img':'${session.USER_DATA.imagePath}'})|"><img th:src="${session.USER_DATA.imagePath}"></a>
+                    <a class="user-img" id="USER_CENTER" title="晓默"
+                       th:data="|({'uid':'${session.USER_DATA.userId}','name':'${session.USER_DATA.nickName}','img':'${session.USER_DATA.imagePath}'})|"><img
+                            th:src="${session.USER_DATA.imagePath}"></a>
                     <div class="mini-avatar" id="mini_avatar">
                         <ul>
                             <li><a>个人中心</a></li>
@@ -33,9 +36,23 @@
                     <script>
                         (function() {
                             var miniAvatar = document.getElementById('mini_avatar');
-                            $C.bindEvent.add(document.getElementById('USER_CENTER'), 'onclick', function() {
+                            var userCenter = document.getElementById('USER_CENTER');
+
+                            // 显示OR隐藏[miniAvatar]模块
+                            $C.bindEvent.add(userCenter, 'onclick', function() {
                                 miniAvatar.style.display = miniAvatar.style.display == 'none' || !miniAvatar.style.display ? 'block' : 'none';
                             });
+
+                            // 添加一个全局的鼠标点击事件,当鼠标点击别处时隐藏[miniAvatar]模块
+                            $C.mouse.down.add({
+                                key: "mini_avatar",
+                                value: function(key) {
+                                    let tar = (key.target || key.srcElement); // key.srcElement兼容IE
+                                    if (!$C.dom.isTargetSon(tar, miniAvatar) && !$C.dom.isTargetSon(tar, userCenter))
+                                        miniAvatar.style.display = 'none';
+                                }
+                            });
+
                         })();
                     </script>
                 </div>
