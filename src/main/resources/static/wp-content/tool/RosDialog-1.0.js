@@ -219,7 +219,8 @@
                 var submitButton; // 提交按钮文本框
                 var formList; // form表单
                 var formState = true; // 表单状态
-
+                var selectBox;
+                var autoBox;
                 // 初始化登录框
                 initBox({
                     title: '登录',
@@ -229,43 +230,71 @@
                         var loginForm = document.createElement('form');
                         loginForm.className = 'login-form';
                         formList = loginForm;
-                        var ul = document.createElement('ul');
+                        let ul = document.createElement('ul');
 
-                        var li_1 = document.createElement('li');
+                        let li_1 = document.createElement('li');
                         li_1.className = "item";
-                        var li_1_i1 = document.createElement('div');
+                        let li_1_i1 = document.createElement('div');
                         li_1_i1.className = 'username-box';
-                        var li_1_put = document.createElement('input');
+                        let li_1_put = document.createElement('input');
                         li_1_put.type = 'text';
                         li_1_put.name = 'username';
                         li_1_put.placeholder = '账号';
+                        li_1_put.autocomplete = 'off';
+                        li_1_put.setAttribute('box', 'text');
                         usernameInput = li_1_put;
                         li_1_i1.appendChild(li_1_put);
-                        var li_1_i2 = document.createElement('span');
+                        let li_1_i2 = document.createElement('span');
                         li_1_i2.className = 'tips';
                         li_1.appendChild(li_1_i1);
                         li_1.appendChild(li_1_i2);
                         ul.appendChild(li_1);
 
-                        var li_2 = document.createElement('li');
+                        let li_2 = document.createElement('li');
                         li_2.className = "item";
-                        var li_2_i1 = document.createElement('div');
+                        let li_2_i1 = document.createElement('div');
                         li_2_i1.className = 'password-box';
-                        var li_2_put = document.createElement('input');
+                        let li_2_put = document.createElement('input');
                         li_2_put.type = 'password';
                         li_2_put.name = 'password';
                         li_2_put.placeholder = '密码';
+                        li_2_put.setAttribute('box', 'text');
                         passwrodinput = li_2_put;
-
                         li_2_i1.appendChild(li_2_put);
-                        var li_2_i2 = document.createElement('span');
+                        let li_2_i2 = document.createElement('span');
                         li_2_i2.className = 'tips';
                         li_2.appendChild(li_2_i1);
                         li_2.appendChild(li_2_i2);
                         ul.appendChild(li_2);
 
-                        var item = document.createElement('li');
-                        var button = document.createElement('a');
+                        let li_3 = document.createElement('li');
+                        let li_3_div = document.createElement('div');
+                        li_3_div.className = "select-box";
+                        let li_3_label_1 = document.createElement('label');
+                        let li_3_input_1 = document.createElement('input');
+                        let li_3_span_1 = document.createElement('span');
+                        li_3_label_1.className = "select-box-auto";
+                        li_3_input_1.type = "checkbox";
+                        li_3_span_1.innerHTML = "记住密码";
+                        selectBox = li_3_input_1;
+                        li_3_label_1.appendChild(li_3_input_1);
+                        li_3_label_1.appendChild(li_3_span_1);
+                        let li_3_label_2 = document.createElement('label');
+                        let li_3_input_2 = document.createElement('input');
+                        let li_3_span_2 = document.createElement('span');
+                        li_3_label_2.className = "select-box-login";
+                        li_3_input_2.type = "checkbox";
+                        li_3_span_2.innerHTML = "自动登录";
+                        autoBox = li_3_input_2;
+                        li_3_label_2.appendChild(li_3_input_2);
+                        li_3_label_2.appendChild(li_3_span_2);
+                        li_3_div.appendChild(li_3_label_1);
+                        li_3_div.appendChild(li_3_label_2);
+                        li_3.appendChild(li_3_div);
+                        ul.appendChild(li_3);
+
+                        let item = document.createElement('li');
+                        let button = document.createElement('a');
                         button.className = "login-button";
                         button.innerHTML = "登 录";
                         submitButton = button;
@@ -304,10 +333,16 @@
                             $C.fns.setTips(tips, 'tips', '密码不能为空！', false);
                         }
                     });
+
                     // 参数验证通过
                     if (uf && pf) {
                         // 弹出验证码对话框，输入验证码！
                         RosDialog.dialog.slider(function() {
+                            if (selectBox.checked) {
+                                setCookie(usernameInput.value, passwrodinput.value, autoBox.checked);
+                            } else {
+                                $C.Cookie.delCookie("USER_DATA");
+                            }
                             //console.log("验证通过！");
                             // 获取表单数据
                             var userdata = $C.fns.getParameter(formList);
@@ -360,6 +395,37 @@
                     }
                 }
 
+                /**
+                 * 判断是否存在本地Cookie
+                 */
+                function isCookie() {
+                    // 查询本地是否保存有'USER_DATA'的Cookie
+                    let data = $C.Cookie.getCookie("USER_DATA");
+                    if (data != null) {
+                        // 有Cookie,将Cookie值转换为对象
+                        let user = eval(data);
+                        usernameInput.value = user.NAME;
+                        passwrodinput.value = user.PWD;
+                        selectBox.checked = true;
+                        autoBox.checked = user.AUTO;
+                        // 判断是否选择了自动登录
+                        if (user.AUTO) {
+                            // 调用登录函数
+                            submitForm();
+                        }
+                    }
+                }
+
+                /**
+                 * 设置'USER_DATA'的本地Cookie
+                 * @param name 账号
+                 * @param pwd 密码
+                 * @param auto [boolean]自定登录
+                 */
+                function setCookie(name, pwd, auto) {
+                    $C.Cookie.setCookie("USER_DATA", "({'NAME':'" + name + "','PWD':'" + pwd + "','AUTO':" + auto + "})");
+                }
+
                 // ## 为form表单组件绑定函数 ##
                 // 为文本框绑定clearBlank(禁止输入空格)事件
                 $C.bindEvent.add(usernameInput, 'oninput', $C.fns.clearBlank);
@@ -372,9 +438,9 @@
                 $C.bindEvent.add(passwrodinput, 'onfocus', function() {
                     $C.key.pressEnter(submitForm);
                 });
-
                 // 点击登录按钮提交表单数据
                 $C.bindEvent.add(submitButton, 'onclick', submitForm);
+                isCookie();
             },
 
             /**
@@ -458,8 +524,164 @@
                 return function() {
                     wrap.parentNode.removeChild(wrap);
                 }
-            }
+            },
 
+            /**
+             * 弹出图片上传框
+             */
+            image: function() {
+                let fileInput;
+                let fileBox;
+                let image;
+                let imageBg;
+                let crop;
+                let drag;
+                let cropView;
+                let cropFace;
+                let IMAGE_WIDTH; // 背景图宽度
+                let IMAGE_HEIGHT; // 背景图高度
+                let IMAGE_FACE; // 背景图DOM元素
+                initBox({
+                    title: '图片上传',
+                    boxName: 'upload-box',
+                    content: function() {
+                        let box = document.createElement("div");
+                        box.className = "upload-form";
+                        fileBox = document.createElement("div");
+                        fileBox.className = "file-box";
+
+                        image = document.createElement('img');
+                        image.className = "file-box-image";
+                        imageBg = document.createElement('div');
+                        imageBg.className = "file-box-image-bg";
+                        fileBox.appendChild(image);
+                        fileBox.appendChild(imageBg);
+
+                        drag = document.createElement("div");
+                        drag.className = "file-box-drag";
+                        imageBg.appendChild(drag);
+                        crop = document.createElement('div');
+                        crop.className = "file-box-crop";
+                        cropView = document.createElement('span');
+                        cropView.className = "crop-point-view";
+                        crop.appendChild(cropView);
+                        cropFace = document.createElement('span');
+                        cropFace.className = "crop-point-face";
+                        crop.appendChild(cropFace);
+
+                        let point_nw = document.createElement('span');
+                        point_nw.className = "crop-point point-nw";
+                        let point_ne = document.createElement('span');
+                        point_ne.className = "crop-point point-ne";
+                        let point_sw = document.createElement('span');
+                        point_sw.className = "crop-point point-sw";
+                        let point_se = document.createElement('span');
+                        point_se.className = "crop-point point-se";
+                        crop.appendChild(point_nw);
+                        crop.appendChild(point_ne);
+                        crop.appendChild(point_sw);
+                        crop.appendChild(point_se);
+                        imageBg.appendChild(crop);
+
+                        box.appendChild(fileBox);
+
+                        let fileInfo = document.createElement("div");
+                        fileInfo.className = "file-info";
+                        box.appendChild(fileInfo);
+
+                        return box;
+                    },
+                    button: function() {
+                        let buttonBox = document.createElement("div");
+                        fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.name = "file";
+                        buttonBox.appendChild(fileInput);
+                        return buttonBox;
+                    }
+                });
+
+                /**
+                 * 为input框绑定Event事件,选择文件时触发
+                 */
+                $C.bindEvent.add(fileInput, 'onchange', function() {
+                    let file = this.files[0];
+                    if (file != undefined && file != null) {
+                        // 判断是文件是否为图片
+                        if ((file.type).indexOf("image/") >= 0) {
+                            // 使用Promise异步读取文件
+                            let fr = new FileReader();
+                            let prom = new Promise(function(resolve, reject) {
+                                resolve(fr.readAsDataURL(file));
+                                fr.onerror = function() {
+                                    RosDialog.dialog.open("读取文件出错！请重试！", 5000);
+                                };
+                            });
+                            prom.then(function() {
+                                // 文件读取完成后将读取到的图片设置到文件预览框内
+                                fr.onload = function(theFile) {
+                                    image.src = theFile.target.result;
+                                    //imageBg.style.backgroundImage = "url(" + fr.result + ")";
+                                    // 设置预览背景图片的高度(宽度固定为400px)
+                                    if (IMAGE_FACE != null) {
+                                        IMAGE_FACE.parentNode.removeChild(IMAGE_FACE);
+                                    }
+                                    IMAGE_FACE = new Image();
+                                    IMAGE_FACE.src = theFile.target.result;
+                                    cropView.appendChild(IMAGE_FACE);
+                                    image.onload = function() {
+                                        imageBg.style.height = image.height + 'px';
+                                        crop.style.display = 'block';
+                                        IMAGE_WIDTH = IMAGE_FACE.width = image.width;
+                                        IMAGE_HEIGHT = IMAGE_FACE.height = image.height;
+                                        IMAGE_FACE.style.transform = "translateX(0px) translateY(0px)";
+                                        crop.style.left = '0px';
+                                        crop.style.top = '0px';
+                                    };
+                                };
+                            });
+                        } else {
+                            $C.dialog.open("你选择的文件不是图片哦~", 5000);
+                            return;
+                        }
+                    }
+                });
+
+                /**
+                 * 点击选择框移动坐标
+                 */
+                $C.bindEvent.add(crop, 'onmousedown', function(e) {
+                    //鼠标点击物体那一刻相对于物体左侧边框的距离=点击时的位置相对于浏览器最左边的距离-物体左边框相对于浏览器最左边的距离  
+                    let diffX = e.clientX - crop.offsetLeft; // 预览框X坐标
+                    let diffY = e.clientY - crop.offsetTop; // 预览框Y坐标
+                    let seX = crop.offsetWidth; // 预览框宽度
+                    let seY = crop.offsetHeight; // 预览框高度
+                    document.onmousemove = function(e) {
+                        //   console.log("X = " + diffX + " - Y = " + diffY);
+                        let left = e.clientX - diffX;
+                        let top = e.clientY - diffY;
+                        let Ileft = e.clientX + diffX;
+                        let Itop = e.clientY - diffY;
+                        //   console.log(left + "  -  " + top + " | " + Ileft + "  -  " + Itop);
+                        // 限制预览框只能在背景图片范围内滑动
+                        if (left < 0) left = 0;
+                        if (left + seX > IMAGE_WIDTH) left = IMAGE_WIDTH - seX;
+                        if (top < 0) top = 0;
+                        if (top + seY > IMAGE_HEIGHT) top = IMAGE_HEIGHT - seY
+                        //移动时重新得到物体的距离，解决拖动时出现晃动的现象  
+                        crop.style.left = left + 'px';
+                        crop.style.top = top + 'px';
+                        // 设置背景图相对位置,实现预览框在背景图上的滑动
+                        IMAGE_FACE.style.transform = "translateX(" + -left + "px) translateY(" + -top + "px)";
+                    };
+                    //当鼠标弹起来的时候不再移动  
+                    document.onmouseup = function(e) {
+                        this.onmousemove = null
+                        //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动） 
+                        this.onmouseup = null;
+                    };
+                });
+            }
         }
     }
 

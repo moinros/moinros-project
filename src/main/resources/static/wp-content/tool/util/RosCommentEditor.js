@@ -1,6 +1,10 @@
 (function() {
     // 获取HTML页面标记
-    var HTML_DATA = eval(document.getElementsByTagName('body')[0].getAttribute('data'));
+    let BODY = document.getElementsByTagName('body')[0];
+    console.log(BODY);
+//    var HTML_DATA = eval(BODY.getAttribute('data'));
+
+
     var form = document.getElementById('CommentEditor');
     if (form) {
         // 文本框
@@ -34,13 +38,13 @@
                 USERDATA = eval(USER_CENTER.getAttribute('data'));
             }
         }
-        
-        
+
+
         function verifyParam() {
             // 获取表单数据
             var params = $C.fns.getParameter(form);
             if (USERDATA == null) {
-               // author.style.display = 'block';
+                // author.style.display = 'block';
             }
             params['mark'] = HTML_DATA.pageMark.mark;
             params['url'] = window.location.href;

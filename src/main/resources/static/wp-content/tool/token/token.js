@@ -1,19 +1,13 @@
 (function() {
 
-    /*
-    function basefunc(password){
-        var encypass = Base64.encode(password);
-        var decryptpass = Base64.decode(encypass);
-        console.log("加密之前的密码是：" + password);
-        console.log("加密之后的结果是：" + encypass);
-        console.log("解密之后的结果是：" + decryptpass);
-    }
-     */
     /**
      * Base64 算法
      */
     const Base64 = {
         _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+        /**
+         * Base64编码
+         */
         encode: function(e) {
             var t = "";
             var n, r, i, s, o, u, a;
@@ -36,6 +30,9 @@
             }
             return t
         },
+        /**
+         * Base64解码
+         */
         decode: function(e) {
             var t = "";
             var n, r, i;
@@ -177,16 +174,93 @@
         }
     }
     $C.RSA = RSA;
+
     //   $C.addObject('RSA', RSA);
+
+    /**
+     * 将指定格式的字符串转换为秒;
+     * s 表示秒(例:s60表示60秒);
+     * h 表示小时(例:h24表示24小时);
+     * d 表示天(例:s3表示3天);
+     * @returns {number}
+     */
+    function getSec(str) {
+        let str1 = str.substring(1, str.length) * 1;
+        let str2 = str.substring(0, 1);
+        if (str2 == "s") {
+            return str1 * 1000;
+        } else if (str2 == "h") {
+            return str1 * 60 * 60 * 1000;
+        } else if (str2 == "d") {
+            return str1 * 24 * 60 * 60 * 1000;
+        } else {
+            throw "字符串格式不正确! 指定秒:s60; 指定小时:h24; 指定天:d3.";
+        }
+    }
+
+    /**
+     * 与Cookie相关的函数
+     * @type {{getCookie: getCookie}}
+     */
+    const Cookie = {
+
+        /**
+         * 查找指定名字的Cookie,没有则返回null
+         * @param name Coolie名字
+         * @returns {string|null}
+         */
+        getCookie: function(key) {
+            key = Base64.encode(key);
+            let arr, reg = new RegExp("(^| )" + key + "=([^;]*)(;|$)");
+            if (arr = document.cookie.match(reg)) {
+                return Base64.decode(unescape(arr[2]));
+            } else {
+                return null;
+            }
+        },
+
+        /**
+         * 设置Cookie
+         * @param key Cookie名
+         * @param value Cookie值
+         * @param time 有效时间(默认30天-d30)
+         */
+        setCookie: function(key, value, time) {
+            // 获取当前时间
+            let exp = new Date();
+            if (!time) {
+                // 没有设置time则默认有效时间为30天
+                time = "d30";
+            }
+            // 将time转换为秒
+            let sec = getSec(time);
+            exp.setTime(exp.getTime() + sec * 1);
+            // key和value转码后保存
+            document.cookie = Base64.encode(key) + "=" + Base64.encode(value) + ";expires=" + exp.toUTCString();
+        },
+
+        /**
+         * 删除Cookie
+         * @param key Cookie名
+         */
+        delCookie: function(key) {
+            let exp = new Date();
+            exp.setTime(exp.getTime() - 1);
+            let cval = Cookie.getCookie(key);
+            if (cval != null)
+                document.cookie = Base64.encode(key) + "=" + cval + ";expires=" + exp.toUTCString();
+        },
+    };
+    $C.Cookie = Cookie;
 
 })();
 
 (function($) {
-    var rotateLeft = function(lValue, iShiftBits) {
+    let rotateLeft = function(lValue, iShiftBits) {
         return (lValue << iShiftBits) | (lValue >>> (32 - iShiftBits));
     }
-    var addUnsigned = function(lX, lY) {
-        var lX4, lY4, lX8, lY8, lResult;
+    let addUnsigned = function(lX, lY) {
+        let lX4, lY4, lX8, lY8, lResult;
         lX8 = (lX & 0x80000000);
         lY8 = (lY & 0x80000000);
         lX4 = (lX & 0x40000000);
@@ -203,43 +277,43 @@
             return (lResult ^ lX8 ^ lY8);
         }
     }
-    var F = function(x, y, z) {
+    let F = function(x, y, z) {
         return (x & y) | ((~x) & z);
     }
-    var G = function(x, y, z) {
+    let G = function(x, y, z) {
         return (x & z) | (y & (~z));
     }
-    var H = function(x, y, z) {
+    let H = function(x, y, z) {
         return (x ^ y ^ z);
     }
-    var I = function(x, y, z) {
+    let I = function(x, y, z) {
         return (y ^ (x | (~z)));
     }
-    var FF = function(a, b, c, d, x, s, ac) {
+    let FF = function(a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(F(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
-    var GG = function(a, b, c, d, x, s, ac) {
+    let GG = function(a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(G(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
-    var HH = function(a, b, c, d, x, s, ac) {
+    let HH = function(a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(H(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
-    var II = function(a, b, c, d, x, s, ac) {
+    let II = function(a, b, c, d, x, s, ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(I(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     };
-    var convertToWordArray = function(string) {
-        var lWordCount;
-        var lMessageLength = string.length;
-        var lNumberOfWordsTempOne = lMessageLength + 8;
-        var lNumberOfWordsTempTwo = (lNumberOfWordsTempOne - (lNumberOfWordsTempOne % 64)) / 64;
-        var lNumberOfWords = (lNumberOfWordsTempTwo + 1) * 16;
-        var lWordArray = Array(lNumberOfWords - 1);
-        var lBytePosition = 0;
-        var lByteCount = 0;
+    let convertToWordArray = function(string) {
+        let lWordCount;
+        let lMessageLength = string.length;
+        let lNumberOfWordsTempOne = lMessageLength + 8;
+        let lNumberOfWordsTempTwo = (lNumberOfWordsTempOne - (lNumberOfWordsTempOne % 64)) / 64;
+        let lNumberOfWords = (lNumberOfWordsTempTwo + 1) * 16;
+        let lWordArray = Array(lNumberOfWords - 1);
+        let lBytePosition = 0;
+        let lByteCount = 0;
         while (lByteCount < lMessageLength) {
             lWordCount = (lByteCount - (lByteCount % 4)) / 4;
             lBytePosition = (lByteCount % 4) * 8;
@@ -253,8 +327,8 @@
         lWordArray[lNumberOfWords - 1] = lMessageLength >>> 29;
         return lWordArray;
     };
-    var wordToHex = function(lValue) {
-        var WordToHexValue = "", WordToHexValueTemp = "", lByte, lCount;
+    let wordToHex = function(lValue) {
+        let WordToHexValue = "", WordToHexValueTemp = "", lByte, lCount;
         for (lCount = 0; lCount <= 3; lCount++) {
             lByte = (lValue >>> (lCount * 8)) & 255;
             WordToHexValueTemp = "0" + lByte.toString(16);
@@ -262,11 +336,11 @@
         }
         return WordToHexValue;
     };
-    var uTF8Encode = function(string) {
+    let uTF8Encode = function(string) {
         string = string.replace(/\x0d\x0a/g, "\x0a");
-        var output = "";
-        for (var n = 0; n < string.length; n++) {
-            var c = string.charCodeAt(n);
+        let output = "";
+        for (let n = 0; n < string.length; n++) {
+            let c = string.charCodeAt(n);
             if (c < 128) {
                 output += String.fromCharCode(c);
             } else if ((c > 127) && (c < 2048)) {
@@ -282,12 +356,12 @@
     };
     $.extend({
         md5: function(string) {
-            var x = Array();
-            var k, AA, BB, CC, DD, a, b, c, d;
-            var S11 = 7, S12 = 12, S13 = 17, S14 = 22;
-            var S21 = 5, S22 = 9, S23 = 14, S24 = 20;
-            var S31 = 4, S32 = 11, S33 = 16, S34 = 23;
-            var S41 = 6, S42 = 10, S43 = 15, S44 = 21;
+            let x = Array();
+            let k, AA, BB, CC, DD, a, b, c, d;
+            let S11 = 7, S12 = 12, S13 = 17, S14 = 22;
+            let S21 = 5, S22 = 9, S23 = 14, S24 = 20;
+            let S31 = 4, S32 = 11, S33 = 16, S34 = 23;
+            let S41 = 6, S42 = 10, S43 = 15, S44 = 21;
             string = uTF8Encode(string);
             x = convertToWordArray(string);
             a = 0x67452301;
@@ -368,7 +442,7 @@
                 c = addUnsigned(c, CC);
                 d = addUnsigned(d, DD);
             }
-            var tempValue = wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
+            let tempValue = wordToHex(a) + wordToHex(b) + wordToHex(c) + wordToHex(d);
             return tempValue.toLowerCase();
         }
     });

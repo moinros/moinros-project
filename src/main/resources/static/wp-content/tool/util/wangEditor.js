@@ -4410,7 +4410,7 @@ Editor.prototype = {
 
         // 编辑区域
         $textElem = $('<div></div>');
-        $textElem.attr('contenteditable', 'true').css('width', '100%').css('min-height', '100px').css('max-height', '1000px');
+        $textElem.attr('contenteditable', 'true').css('width', '100%').css('min-height', '100px').css('max-height', '1200px');
 
         // 初始化编辑区域内容
         if ($children && $children.length) {

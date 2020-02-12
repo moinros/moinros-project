@@ -10,34 +10,34 @@ package com.moinros.project.model.dto.enums;
 public enum CheckcodeState {
 
     /**
-     * success : 验证通过
+     * SUCCESS : 验证通过
      */
-    success("验证通过！"),
+    SUCCESS("验证通过！"),
 
     /**
-     * error : 没有查询到验证码
+     * ERROR : 没有查询到验证码
      */
-    error("无效的验证码！"),
+    ERROR("无效的验证码！"),
 
     /**
-     * overtime : 验证码超时
+     * OVERTIME : 验证码超时
      */
-    overtime("验证码超时！"),
+    OVERTIME("验证码超时！"),
 
     /**
-     * invalid : 验证码失效
+     * INVALID : 验证码失效
      */
-    invalid("验证码已失效！"),
+    INVALID("验证码已失效！"),
 
     /**
-     * isnull : 传入了空值
+     * IS_NULL : 传入了空值
      */
-    isnull("Checkcode is null!!"),
+    IS_NULL("Checkcode is null!!"),
 
     /**
-     * mismatch : 验证码不匹配
+     * MISMATCH : 验证码不匹配
      */
-    mismatch("验证码不匹配！"),
+    MISMATCH("验证码不匹配！"),
     ;
 
     private String code;

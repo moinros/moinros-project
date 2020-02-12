@@ -1,9 +1,9 @@
 package com.moinros.project.service;
 
-import com.moinros.project.common.annotation.tool.ParamIsNull;
 import com.moinros.project.common.annotation.base64.Base64Decoder;
 import com.moinros.project.common.annotation.base64.Base64Encoder;
 import com.moinros.project.common.annotation.base64.Base64EncoderParam;
+import com.moinros.project.common.annotation.tool.ParamIsNull;
 import com.moinros.project.model.dao.UserDataMapper;
 import com.moinros.project.model.dto.ResultValue;
 import com.moinros.project.model.dto.enums.UserServiceState;
@@ -53,6 +53,28 @@ public class UserServiceImpl implements UserService {
             return rv;
         }
         return null;
+    }
+
+    @Override
+    @Transactional
+    @Base64Decoder
+    @Base64Encoder(param = {@Base64EncoderParam(name = "user", type = UserData.class)})
+    public ResultValue<UserServiceState, UserData> register(UserData user) {
+        ResultValue<UserServiceState, UserData> rv = new ResultStateValue<>();
+        user.setRegisterTime(DateFormatUtil.getDateTime());
+        Integer id = mapper.getUserIdValueIsMax();
+        user.setUserId(id == null ? 1001000 : id.intValue() + 1);
+        user.setPassword(new Token().addSalt(user.getPassword()));
+    //    System.out.println(user);
+        Integer num = mapper.insertUserData(user);
+        if (num != null && num.intValue() > 0) {
+            // 注册成功！
+            rv.setState(UserServiceState.REGISTER_SUCCESS);
+            rv.setValue(user);
+        } else {
+            rv.setState(UserServiceState.REGISTER_ERROR);
+        }
+        return rv;
     }
 
     @Override

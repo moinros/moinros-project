@@ -2,14 +2,17 @@ package com.moinros.project.controller.user;
 
 import com.moinros.project.common.annotation.tool.ParamIsNull;
 import com.moinros.project.model.dto.ResultValue;
+import com.moinros.project.model.dto.enums.CheckcodeState;
 import com.moinros.project.model.dto.enums.UserServiceState;
 import com.moinros.project.model.dto.vo.ClientSide;
 import com.moinros.project.model.pojo.UserData;
+import com.moinros.project.model.pojo.system.Checkcode;
 import com.moinros.project.result.Reply;
 import com.moinros.project.result.enums.Status;
 import com.moinros.project.result.sub.StrConst;
 import com.moinros.project.result.vo.WebReply;
 import com.moinros.project.service.UserService;
+import com.moinros.project.service.system.CheckcodeService;
 import com.moinros.project.tool.cipher.WebRSAEncrypt;
 import com.moinros.project.tool.util.string.RegexUtil;
 import com.moinros.project.tool.web.NetworkUtil;
@@ -38,6 +41,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CheckcodeService checkcodeService;
 
     @GetMapping("/register")
     public String register() {
@@ -49,14 +54,44 @@ public class UserController {
     @ParamIsNull(paramName = {"nickname", "password", "username", "checkcode"})
     public Reply register(String nickname, String password, String username, String checkcode, HttpSession session) {
         Reply r = new WebReply();
-        System.out.println(nickname);
-        System.out.println(password);
-        System.out.println(username);
-        System.out.println(checkcode);
         if (nickname != null && password != null && username != null && checkcode != null) {
-            StrConst.setMessage("注册成功！", "网站首页", "/", session);
-            r.setState(Status.success);
-            r.setContent("注册成功！");
+            if (RegexUtil.isEmail(username)) {
+                Checkcode code = new Checkcode();
+                code.setCheckcodeKey(username);
+                code.setCheckcodeValue(checkcode);
+                CheckcodeState state = checkcodeService.verifyThatCheckcode(code);
+                if (state == CheckcodeState.SUCCESS) {
+                    UserData user = new UserData();
+                    user.setNickName(nickname);
+                    user.setPassword(password);
+                    user.setUserName(username);
+                    user.setUserEmail(username);
+                    ResultValue<UserServiceState, UserData> rv = userService.register(user);
+                    if (rv.getState() == UserServiceState.REGISTER_SUCCESS) {
+                        r.setState(Status.success);
+                        session.setAttribute(StrConst.USER_DATA, rv.getValue());
+                        StrConst.setMessage(rv.getState().getTips(), "返回网站首页", "/", session);
+                    } else {
+                        r.setState(Status.error);
+                    }
+                    r.setContent(rv.getState().getTips());
+                } else {
+                    r.setState(Status.error);
+                    if (state == CheckcodeState.IS_NULL) {
+                        throw new RuntimeException(state.getCode());
+                    } else if (state == CheckcodeState.ERROR || state == CheckcodeState.MISMATCH) {
+                        r.setContent(CheckcodeState.ERROR.getCode());
+                    } else {
+                        r.setContent(state.getCode());
+                    }
+                }
+            } else {
+                r.setState(Status.error);
+                r.setContent("邮箱格式不正确！");
+            }
+        } else {
+            r.setState(Status.error);
+            r.setContent("参数填写不完整！");
         }
         return r;
     }
@@ -112,8 +147,6 @@ public class UserController {
     @PostMapping("/login")
     public Reply login(String username, String password, String url, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
-        System.out.println(">> " + username);
-        System.out.println(">> " + password);
         WebReply r = new WebReply();
         if (username != null && password != null) {
             // 获取客户端消息头数据

@@ -50,22 +50,22 @@ public class CheckcodeServiceImpl implements CheckcodeService {
                     if (code.getCheckcodeKey().equals(checkcode.getCheckcodeKey()) && code.getCheckcodeValue().equals(checkcode.getCheckcodeValue())) {
                         if (code.getCheckcodeStatus() != null && code.getCheckcodeStatus()) {
                             if (code.getCheckcodeTimeLimit() + 1800000 < System.currentTimeMillis()) {
-                                return CheckcodeState.overtime; // 超时
+                                return CheckcodeState.OVERTIME; // 超时
                             } else {
                                 removeCheckcodeByKey(code.getCheckcodeKey());
-                                return CheckcodeState.success; // 验证通过
+                                return CheckcodeState.SUCCESS; // 验证通过
                             }
                         } else {
-                            return CheckcodeState.invalid; // 失效
+                            return CheckcodeState.INVALID; // 失效
                         }
                     }
                 }
-                return CheckcodeState.mismatch; // 验证码不匹配
+                return CheckcodeState.MISMATCH; // 验证码不匹配
             } else {
-                return CheckcodeState.error; // 没有查询到
+                return CheckcodeState.ERROR; // 没有查询到
             }
         } else {
-            return CheckcodeState.isnull; // 传入了空值
+            return CheckcodeState.IS_NULL; // 传入了空值
         }
     }
 }

@@ -815,6 +815,25 @@
         },
     };
 
+    const WEEK_NUMBER = ['日', '一', '二', '三', '四', '五', '六'];
+    /**
+     * 与时间相关的函数
+     */
+    RosScript.date = {
+        getDate: function() {
+            let dt = new Date();
+            return {
+                year: {k: '年', v: dt.getFullYear()},
+                month: {k: '月', v: dt.getMonth() + 1},
+                day: {k: '日', v: dt.getDate()},
+                hour: {k: '时', v: dt.getHours() < 10 ? '0' + dt.getHours() : dt.getHours()},
+                minutes: {k: '分', v: dt.getMinutes() < 10 ? '0' + dt.getMinutes() : dt.getMinutes()},
+                seconds: {k: '秒', v: dt.getSeconds() < 10 ? '0' + dt.getSeconds() : dt.getSeconds()},
+                week: {k: '星期', v: WEEK_NUMBER[dt.getDay()]},
+                time: {k: '毫秒', v: dt.getTime()},
+            };
+        }
+    };
     /**
      * 在兄弟元素或者兄弟元素的子元素中查找指定className的元素
      * @param e DOM元素对象

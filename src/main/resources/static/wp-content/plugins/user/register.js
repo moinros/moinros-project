@@ -225,9 +225,10 @@
                 RosDialog.dialog.slider(function() {
                     let closeWait = RosDialog.dialog.wait();
                     console.log("提交表单数据");
+                    console.log(params);
                     $.ajax({
                         type: 'post',
-                        url: '',
+                        url: '/register',
                         data: params,
                         dataType: 'json',
                         contentType: $C.ajax.contentType.form,
@@ -250,7 +251,6 @@
                 });
             }
         }
-        console.log(params);
     }
 
     const form = document.getElementById("register_form");

@@ -16,11 +16,15 @@
         <h2><a onclick="RosDialog.dialog.login()">登录框</a></h2>
         <h2><a onclick="RosDialog.dialog.open(null)">对话框</a></h2>
         <h2><a onclick="RosDialog.dialog.msg('', 5000)">消息框</a></h2>
-        <h2><a onclick="RosDialog.dialog.slider(function() {
-
-        })">验证条</a></h2>
+        <h2><a onclick="RosDialog.dialog.slider(function() {})">验证条</a></h2>
+        <h2><a onclick="RosDialog.dialog.image()">图片上传</a></h2>
 </section>
+<script type="text/javascript" src="/wp-content/tool/token/jsencrypt.min.js"></script>
+<script type="text/javascript" src="/wp-content/tool/token/token.js"></script>
 <script>
+   // $C.Cookie.setCookie("USER_DATA", "({'NAME':'18384629173','PWD':'moinros','AUTO':'true'})");
+    // console.log(document.cookie);
+
     // $C.socket.onceTask(function(data) {
     //     console.log(data.state + "  |  " + data.toString());
     // });

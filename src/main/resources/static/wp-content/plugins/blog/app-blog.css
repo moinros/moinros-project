@@ -54,3 +54,14 @@ a:active {
     border: 1px solid #ff922b;
     padding: 5px;
 }
+
+.preview-cover + img {
+    position: absolute;
+    width: 200px;
+    border: 1px solid #ccc;
+    display: none;
+}
+
+.preview-cover:hover + img {
+    display: block;
+}

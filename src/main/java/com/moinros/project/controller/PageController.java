@@ -56,6 +56,7 @@ public class PageController {
      * 进入文章档案页面
      */
     @GetMapping("/archive.html")
+    @PageMark(mark = "archive", name = "归档")
     public String archive(Model model) {
         List<Blog> li = blogService.findTitle();
         List<Archive> archives = sort(li);
@@ -113,6 +114,7 @@ public class PageController {
      * 进入网站日志页面
      */
     @GetMapping("/log.html")
+    @PageMark(mark = "log", name = "日志")
     public String log() {
         return "other/log";
     }
@@ -121,6 +123,7 @@ public class PageController {
      * 进入网站说明页面
      */
     @GetMapping("/about.html")
+    @PageMark(mark = "about", name = "关于")
     public String about() {
         return "other/about";
     }
@@ -129,6 +132,7 @@ public class PageController {
      * 进入留言板
      */
     @GetMapping("/msg.html")
+    @PageMark(mark = "msg", name = "留言板")
     public String msg() {
         return "other/msg";
     }

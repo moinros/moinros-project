@@ -31,6 +31,14 @@ public interface UserService {
     ResultValue<UserServiceState, UserData> register(String nickName, String userEmail, String password);
 
     /**
+     * 注释: 用户账号注册
+     *
+     * @param user 用户数据
+     * @return [ResultValue] 返回处理结果
+     */
+    ResultValue<UserServiceState, UserData> register(UserData user);
+
+    /**
      * 注释: 查询用户邮箱是否存在
      *
      * @param userEmail 用户邮箱

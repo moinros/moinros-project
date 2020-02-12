@@ -2,7 +2,6 @@ package com.moinros.project.model.pojo;
 
 import com.moinros.project.common.annotation.base64.Base64Mark;
 import com.moinros.project.model.dto.enums.Gender;
-import com.moinros.project.tool.util.string.StringUtil;
 
 import java.io.Serializable;
 
@@ -274,7 +273,22 @@ public class UserData implements Serializable {
         this.registerTime = registerTime;
     }
 
+    @Override
     public String toString() {
-        return StringUtil.toString(this);
+        return "UserData{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", gender=" + gender +
+                ", imagePath='" + imagePath + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userIntro='" + userIntro + '\'' +
+                ", clientIp='" + clientIp + '\'' +
+                ", loginTime='" + loginTime + '\'' +
+                ", registerTime='" + registerTime + '\'' +
+                '}';
     }
 }

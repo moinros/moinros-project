@@ -33,7 +33,7 @@
                     </div>
                 </header>
                 <div class="blog-intro">简介：<span th:text="${blogData.blogIntro}"></span></div>
-                <p><a th:if="${blogData.blogCover != null}" th:href="${blogData.blogCover}" target="_blank">查看封面</a></p>
+                <p><a class="preview-cover" th:if="${blogData.blogCover != null}" th:href="${blogData.blogCover}" target="_blank">点击查看封面</a><img th:if="${blogData.blogCover != null}" th:src="${blogData.blogCover}"/></p>
                 <div class="blog-content">
                     <div th:utext="${blogData.blogContent}"></div>
                 </div>
