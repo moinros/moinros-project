@@ -1,0 +1,561 @@
+<!--
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <title>图片裁剪</title>
+    <style>
+        .crop-drag-box {
+            position: relative;
+            user-select: none;
+            background-color: grey;
+            width: 600px;
+            min-height: 256px;
+        }
+
+        .crop-drag-box::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+        .crop-drag-box img {
+            max-width: 600px;
+            user-select: none;
+        }
+
+        .preview-img img, .canvas-img img {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        /* 裁剪 */
+        .preview-img img {
+            clip: rect(0px, 102px, 102px, 0px);
+        }
+
+        /* 两张图片的位置要一样 */
+        .canvas-img img {
+            opacity: 0.5;
+        }
+
+        .drag-view {
+            display: none;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            cursor: move;
+            box-shadow: 0px 0px 1px 1px #FFFFFF;
+        }
+
+        .drag-point {
+            width: 6px;
+            height: 6px;
+            position: absolute;
+            background-color: white;
+            opacity: 0.6;
+        }
+
+
+        .point-n {
+            cursor: ns-resize;
+            top: -3px;
+            left: calc(50% - 3px);
+        }
+
+        .point-e {
+            right: -3px;
+            top: calc(50% - 3px);
+        }
+
+        .point-s {
+            bottom: -3px;
+            left: calc(50% - 3px);
+        }
+
+        .point-w {
+            left: -3px;
+            top: calc(50% - 3px);
+        }
+
+        .point-ne {
+            cursor: nesw-resize;
+            right: -3px;
+            top: -3px;
+        }
+
+        .point-se {
+            cursor: nwse-resize;
+            right: -3px;
+            bottom: -3px;
+        }
+
+        .point-nw {
+            cursor: nwse-resize;
+            left: -3px;
+            top: -3px;
+        }
+
+        .point-sw {
+            cursor: nesw-resize;
+            left: -3px;
+            bottom: -3px;
+        }
+
+    </style>
+</head>
+<body id="app">
+<div class="show-div">
+    <div class="dialog-box upload-box">
+        <div class="dialog-close"><span class="title">图片上传</span><i class="close"><i>关闭</i></i></div>
+        <div class="dialog-content">
+            <div class="crop-drag-box" id="crop_drag_box">
+                <div class="canvas-img" id="canvas_img"></div>
+                <div class="preview-img" id="preview_img"></div>
+                <div class="drag-view" id="drag_view">
+                    &lt;!&ndash;north,east,south,west &ndash;&gt;
+                    <div id="point_n" class="drag-point point-n" tips="北"></div>
+                    <div id="point_e" class="drag-point point-e" tips="东"></div>
+                    <div id="point_s" class="drag-point point-s" tips="南"></div>
+                    <div id="point_w" class="drag-point point-w" tips="西"></div>
+                    <div id="point_ne" class="drag-point point-ne" tips="东北"></div>
+                    <div id="point_se" class="drag-point point-se" tips="东南"></div>
+                    <div id="point_nw" class="drag-point point-nw" tips="西北"></div>
+                    <div id="point_sw" class="drag-point point-sw" tips="西南"></div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-button">
+            <div><input id="fileInput" type="file" name="file"></div>
+        </div>
+        <div id="canvas_box" class="canvas-box">
+        </div>
+        <p><input type="button" value="裁剪图片" onclick="tailoring()"/></p>
+        <p><input type="button" value="读取图片" onclick="readFile()"/></p>
+    </div>
+</div>
+
+<form action="" method=""></form>
+<script>
+    let cropDragBox = document.getElementById("crop_drag_box");
+    let canvasBox = document.getElementById("canvas_box");
+    let imageBox = document.getElementById("canvas_img");
+    let previewBox = document.getElementById("preview_img");
+    let dragView = document.getElementById("drag_view");
+    let fileInput = document.getElementById("fileInput");
+    let VIEW_IMG; // 裁剪预览图
+    let CANVAS_IMG; // 画布背景图
+    dragView.onmousedown = function(e) {
+        //鼠标点击物体那一刻相对于物体左侧边框的距离=点击时的位置相对于浏览器最左边的距离-物体左边框相对于浏览器最左边的距离  
+        let diffX = e.clientX - dragView.offsetLeft; // 预览框X坐标
+        let diffY = e.clientY - dragView.offsetTop; // 预览框Y坐标
+        let seX = dragView.offsetWidth; // 预览框宽度
+        let seY = dragView.offsetHeight; // 预览框高度
+        document.onmousemove = function(e) {
+            //   console.log("X = " + diffX + " - Y = " + diffY);
+            let left = e.clientX - diffX;
+            let top = e.clientY - diffY;
+            let Ileft = e.clientX + diffX;
+            let Itop = e.clientY - diffY;
+            //   console.log(left + "  -  " + top + " | " + Ileft + "  -  " + Itop);
+            // 限制预览框只能在背景图片范围内滑动
+            if (left < 0) left = 0;
+            if (left + seX > CANVAS_IMG.width) left = CANVAS_IMG.width - seX;
+            if (top < 0) top = 0;
+            if (top + seY > CANVAS_IMG.height) top = CANVAS_IMG.height - seY
+            //移动时重新得到物体的距离，解决拖动时出现晃动的现象  
+            dragView.style.left = left + 'px';
+            dragView.style.top = top + 'px';
+
+            //  VIEW_IMG.style.transform = "translateX(" + -left + "px) translateY(" + -top + "px)";
+            setClip();
+        };
+        //当鼠标弹起来的时候不再移动  
+        document.onmouseup = mouseUpClose;
+    };
+
+    // 解除绑定的鼠标事件,预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动） 
+    function mouseUpClose() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+    }
+
+    // 设置背景图的Clip坐标,实现预览框在背景图上的滑动
+    function setClip() {
+        let top = dragView.offsetTop,
+            right = dragView.offsetLeft + dragView.offsetWidth,
+            bottom = dragView.offsetTop + dragView.offsetHeight,
+            left = dragView.offsetLeft;
+        //   console.log('rect(' + top + 'px, ' + right + 'px, ' + bottom + 'px, ' + left + 'px)');
+        VIEW_IMG.style.clip = 'rect(' + top + 'px, ' + right + 'px, ' + bottom + 'px, ' + left + 'px)';
+    }
+
+    // 东北
+    let pointNE = document.getElementById("point_ne");
+    setEvent(pointNE, function(e) {
+        let maxTop = dragView.offsetTop + dragView.offsetHeight;
+        moveRight(e);
+        moveUp(e, maxTop);
+        // setClip();
+        scaleUp(); // 等比例放大预览框
+    });
+
+    // 东南
+    let pointSE = document.getElementById("point_se");
+    setEvent(pointSE, function(e) {
+        moveRight(e);
+        moveDown(e);
+        // setClip();
+        scaleUp(); // 等比例放大预览框
+    });
+
+
+    // 西北
+    let pointNW = document.getElementById("point_nw");
+    setEvent(pointNW, function(e) {
+        let maxLeft = dragView.offsetLeft + dragView.offsetWidth;
+        let maxTop = dragView.offsetTop + dragView.offsetHeight;
+        moveLeft(e, maxLeft);
+        moveUp(e, maxTop);
+        // setClip();
+        scaleUp(); // 等比例放大预览框
+    });
+
+    // 西南
+    let pointSW = document.getElementById("point_sw");
+    setEvent(pointSW, function(e) {
+        let maxLeft = dragView.offsetLeft + dragView.offsetWidth;
+        moveLeft(e, maxLeft);
+        moveDown(e);
+        // setClip();
+        scaleUp(); // 等比例放大预览框
+    });
+
+    /**
+     * 使预览框长和宽等比例放大
+     */
+    function scaleUp() {
+        // 计算图片长宽中较短的尺寸,作为预览框最大尺寸,防止预览框变形
+        let max = VIEW_IMG.width < VIEW_IMG.height ? VIEW_IMG.width : VIEW_IMG.height;
+        // 计算预览框长宽中较短的尺寸,作为预览框的拉伸尺寸,防止预览框拉出图片区域
+        let size = dragView.offsetWidth < dragView.offsetHeight ? dragView.offsetWidth : dragView.offsetHeight;
+        // console.log(max + "  -  " + size + "  -  " + dragView.offsetWidth + "  -  " + dragView.offsetHeight);
+        dragView.style.width = (size < max ? size : max) + 'px';
+        dragView.style.height = (size < max ? size : max) + 'px';
+        setClip(); // 设置预览图相对位置
+    }
+
+
+    /**
+     * 为拖拽按钮绑定鼠标事件
+     */
+    function setEvent(ele, fn) {
+        ele.onmousedown = function(e) {
+            e.stopPropagation();
+            document.onmousemove = function(e) {
+                fn(e);
+            };
+            document.onmouseup = mouseUpClose;
+        }
+    }
+
+
+    // 裁剪窗口右边不能超出图片
+    function moveRight(e) {
+        let maxW = VIEW_IMG.clientWidth - dragView.offsetLeft - 2;
+        let dragW = e.clientX - dragView.getBoundingClientRect().left;
+        dragView.style.width = Math.min(Math.max(0, dragW), maxW) + 'px';
+    }
+
+    // 裁剪窗口下边不能超出图片
+    function moveDown(e) {
+        let maxH = VIEW_IMG.clientHeight - dragView.offsetTop - 2;
+        let dragH = e.clientY - dragView.getBoundingClientRect().top;
+        dragView.style.height = Math.min(Math.max(0, dragH), maxH) + 'px';
+    }
+
+    // 裁剪窗口左边不能超出图片
+    function moveLeft(e, maxLeft) {
+        let maxW = dragView.offsetLeft + dragView.offsetWidth - 2;
+        let disW = dragView.getBoundingClientRect().left - e.clientX;
+        dragView.style.width = Math.min(Math.max(0, dragView.clientWidth + disW), maxW) + 'px';
+        dragView.style.left = Math.max(Math.min(maxLeft, dragView.offsetLeft - disW), 0) + 'px';
+    }
+
+    // 裁剪窗口上边不能超出图片
+    function moveUp(e, maxTop) {
+        let maxH = dragView.offsetTop + dragView.offsetHeight - 2;
+        let disH = dragView.getBoundingClientRect().top - e.clientY;
+        dragView.style.height = Math.min(Math.max(0, dragView.clientHeight + disH), maxH) + 'px';
+        dragView.style.top = Math.max(Math.min(maxTop, dragView.offsetTop - disH), 0) + 'px';
+    }
+
+    /**
+     * 选择预览图片
+     */
+    fileInput.onchange = function() {
+        let file = this.files[0];
+        if (file != undefined && file != null) {
+            // 判断是文件是否为图片
+            if ((file.type).indexOf("image/") >= 0) {
+                // 使用Promise异步读取文件
+                let fr = new FileReader();
+                let prom = new Promise(function(resolve, reject) {
+
+
+                    resolve(fr.readAsDataURL(file));
+                    fr.onerror = function() {
+                        // RosDialog.dialog.open("读取文件出错！请重试！", 5000);
+                        alert("读取文件出错！请重试！");
+                    };
+                });
+                prom.then(function() {
+                    // 文件读取完成后将读取到的图片设置到文件预览框内
+                    fr.onload = function(theFile) {
+                        removeElement(VIEW_IMG);
+                        removeElement(CANVAS_IMG);
+                        CANVAS_IMG = new Image();
+                        CANVAS_IMG.src = theFile.target.result;
+                        VIEW_IMG = new Image();
+                        VIEW_IMG.src = theFile.target.result;
+                        VIEW_IMG.style.clip = "rect(0px, 100px, 100px, 0px)";
+                        imageBox.appendChild(CANVAS_IMG);
+                        previewBox.appendChild(VIEW_IMG);
+                        CANVAS_IMG.onload = function() {
+                            cropDragBox.style.height = CANVAS_IMG.height + 'px';
+                            dragView.style.display = "block";
+                            initView();
+                            //   previewImg.style.transform = "translateX(0px) translateY(0px)";
+                        };
+                    };
+                });
+            } else {
+                alert("你选择的文件不是图片哦~");
+                // $C.dialog.open("你选择的文件不是图片哦~", 5000);
+            }
+        }
+    }
+
+    /**
+     * 初始化预览框位置
+     */
+    function initView() {
+        dragView.style.left = '0px';
+        dragView.style.top = '0px';
+        dragView.style.width = '100px';
+        dragView.style.height = '100px';
+    }
+
+    // 将指定的DOM元素从DOM树中移除
+    function removeElement(ele) {
+        if (ele)
+            ele.parentNode.removeChild(ele);
+        VIEW_IMG = null;
+    }
+
+    let IMAGE;
+
+    function tailoring() {
+        // console.log(CANVAS_IMG.offsetTop + "  -  " + CANVAS_IMG.offsetLeft);
+        // console.log(CANVAS_IMG.offsetWidth + "  -  " + CANVAS_IMG.offsetHeight);
+        // console.log(dragView.offsetTop + "  -  " + dragView.offsetLeft);
+        // console.log(dragView.offsetWidth + "  -  " + dragView.offsetHeight);
+        //     console.log(VIEW_IMG.style.clip);
+        let board = document.createElement("canvas");
+        if (board.getContext) {
+            let ctx = board.getContext("2d");
+            board.width = CANVAS_IMG.offsetWidth;
+            board.height = CANVAS_IMG.offsetHeight;
+            ctx.drawImage(CANVAS_IMG, 0, 0, CANVAS_IMG.offsetWidth, CANVAS_IMG.offsetHeight);
+            // let rect = getRect(VIEW_IMG);
+            // console.log(rect);
+            console.log("W == " + board.width + "  |  H == " + board.height);
+
+            let data = ctx.getImageData(dragView.offsetLeft, dragView.offsetTop, dragView.offsetWidth, dragView.offsetHeight);
+            console.log(data);
+            board.width = dragView.offsetWidth;
+            board.height = dragView.offsetHeight;
+            ctx.putImageData(data, 0, 0);
+            ctx.save();
+
+            let image = new Image();
+            image.src = board.toDataURL("image/jpeg");
+
+            IMAGE = image;
+            canvasBox.appendChild(image);
+
+        }
+    }
+
+    const Ajax = {
+        upload: function(data, url) {
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.open('POST', url);
+            xhr.send(data);
+        }
+    };
+
+    function readFile() {
+        let form = document.createElement('form');
+
+        form.setAttribute('enctype', 'multipart/form-data');
+        form.method = 'post';
+
+
+        let formData = new FormData(form);
+        let file = dataURLtoFile(IMAGE.src, "moinros-tou.jpeg");
+        formData.append("file", file);
+      //  formData.append("user_name", "moinros-server");
+        Ajax.upload(formData, "https://www.server-file.com/server/file/upload/binary/face");
+        // ajax({
+        //     url: "http://127.0.0.1/server/file/upload",
+        //     type: 'post',
+        //     data: formData,
+        //     dataType: 'json',
+        //     timeout: 100000,
+        //     contentType: "multipart/form-data",
+        //     processData: false,
+        //     success: function(data) {
+        //         //服务器返回响应
+        //         console.log(data);
+        //     },
+        //     //异常处理
+        //     error: function(e) {
+        //         console.log(e);
+        //     }
+        // });
+
+    }
+
+
+    function dataURLtoFile(dataurl, filename) {//将base64转换为文件
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n&#45;&#45;) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type: mime});
+    }
+
+    function dataURLtoBlob(dataurl) {
+        let arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n&#45;&#45;) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type: mime});
+    }
+
+    //将blob转换为file
+    function blobToFile(theBlob, fileName) {
+        theBlob.lastModifiedDate = new Date();
+        theBlob.name = fileName;
+        return theBlob;
+    }
+
+
+    function ajax(options) {
+        options = options || {};  //调用函数时如果options没有指定，就给它赋值{},一个空的Object
+        options.type = (options.type || "GET").toUpperCase();/// 请求格式GET、POST，默认为GET
+        options.dataType = options.dataType || "json";    //响应数据格式，默认json
+        options.processData = options.processData ? true : false;
+        let params;
+        if (options.processData) {
+            params = formatParams(options.data);//options.data请求的数据
+        } else {
+            params = options.data;
+        }
+        let xhr;
+
+        //考虑兼容性
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        }
+        // else if (window.ActiveObject) {//兼容IE6以下版本
+        //     xhr = new ActiveXobject('Microsoft.XMLHTTP');
+        // }
+
+        console.log(options);
+        //启动并发送一个请求
+        if (options.type == "GET") {
+            xhr.open("GET", options.url + "?" + params, true);
+            xhr.send(null);
+        } else if (options.type == "POST") {
+            xhr.open("post", options.url, true);
+
+            //设置表单提交时的内容类型
+            //Content-type数据请求的格式
+            xhr.setRequestHeader("Content-type", options.contentType);
+            xhr.send(params);
+        }
+
+        //    设置有效时间
+        setTimeout(function() {
+            if (xhr.readySate != 4) {
+                xhr.abort();
+            }
+        }, options.timeout);
+
+        //    接收
+        //     options.success成功之后的回调函数  options.error失败后的回调函数
+        //xhr.responseText,xhr.responseXML  获得字符串形式的响应数据或者XML形式的响应数据
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4) {
+                let status = xhr.status;
+                if (status >= 200 && status < 300 || status == 304) {
+                    options.success && options.success(xhr.responseText, xhr.responseXML);
+                } else {
+                    options.error && options.error(xhr);
+                }
+            }
+        }
+    }
+
+    //格式化请求参数
+    function formatParams(data) {
+        let arr = [];
+        for (let name in data) {
+            arr.push(encodeURIComponent(name) + "=" + encodeURIComponent(data[name]));
+        }
+        arr.push(("v=" + Math.random()).replace(".", ""));
+        return arr.join("&");
+
+    }
+
+
+    function getRect(ele) {
+        let clip = ele.style.clip;
+        let item = getExecStrs(clip);
+        return {
+            X: Number(item[0].substring(0, item[0].length - 2)),
+            W: Number(item[1].substring(0, item[1].length - 2)),
+            H: Number(item[2].substring(0, item[2].length - 2)),
+            Y: Number(item[3].substring(0, item[3].length - 2))
+        };
+    }
+
+    function getExecStrs(str) {
+        // var reg = /rect\([0-9]+px,\s*[0-9]+px,\s*[0-9]+px,\s*[0-9]+px\)/g;
+        let reg = /[0-9]+px/g;
+        let list = [];
+        let result = null;
+        do {
+            result = reg.exec(str);
+            result && list.push(result[0]);
+        } while (result);
+        return list;
+    }
+</script>
+</body>
+</html>-->

@@ -79,6 +79,7 @@ public class BlogServiceImpl implements BlogService {
             @Base64EncoderParam(name = "content", type = String.class),
             @Base64EncoderParam(name = "intro", type = String.class),})
     public ResultValue<Boolean, Blog> saveBlog(String cover, String tags, String subject, String content, String intro, Integer blogId) {
+        System.out.println();
         Blog blog = null;
         if (blogId != null) {
             Blog b = new Blog();

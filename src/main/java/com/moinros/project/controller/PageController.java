@@ -133,7 +133,11 @@ public class PageController {
      */
     @GetMapping("/msg.html")
     @PageMark(mark = "msg", name = "留言板")
-    public String msg() {
+    public String msg(Model model) {
+        List tagList = systemService.findTagList();
+        List blogLatest = blogService.findBlogUpLimit(5);
+        model.addAttribute("tagList", tagList);
+        model.addAttribute("blogLatest", blogLatest);
         return "other/msg";
     }
 

@@ -185,6 +185,7 @@ public class BlogSqlProvider {
                 if (blog.getBlogSub() != null) {
                     SET("`blog_sub` = #{blogSub}");
                 }
+                WHERE("`blog_id` = #{blogId}");
             }
         }.toString();
     }

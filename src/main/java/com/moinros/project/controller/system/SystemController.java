@@ -69,6 +69,7 @@ public class SystemController {
     @PostMapping("/blog/update/save/{bid}")
     @ParamIsNull(paramName = {"cover", "subject", "intro", "tags", "content"})
     public Reply blogUpdateSave(String cover, String subject, String intro, String tags, String content, @PathVariable(name = "bid") Integer bid, HttpSession session) {
+
         return savaBlog(cover, tags, subject, content, intro, bid, session);
     }
 

@@ -2,7 +2,7 @@
     // 获取HTML页面标记
     let BODY = document.getElementsByTagName('body')[0];
     console.log(BODY);
-//    var HTML_DATA = eval(BODY.getAttribute('data'));
+    var HTML_DATA = eval(BODY.getAttribute('data'));
 
 
     var form = document.getElementById('CommentEditor');
@@ -48,9 +48,9 @@
             }
             params['mark'] = HTML_DATA.pageMark.mark;
             params['url'] = window.location.href;
-            console.log(USERDATA);
-            console.log(USERDATA.uid);
-            console.log(params);
+            // console.log(USERDATA);
+            // console.log(USERDATA.uid);
+            // console.log(params);
 
 
             var flag = $C.fns.valueIsNull(params['article']);
@@ -103,6 +103,8 @@
                     $C.fns.setTips(linkTips, 'tips', "", true);
                 }
             }
+
+            submitForm(USERDATA, params);
         }
 
 
@@ -114,29 +116,25 @@
          * @param params Form表单参数
          */
         function submitForm(userdata, params) {
-
-            if (flag && nf && ef && lf) {
-                if (formState) {
-                    formState = false;
-                    // $.ajax({
-                    //     type: 'post',
-                    //     url: '/comment/save',
-                    //     data: params,
-                    //     dataType: 'json',
-                    //     contentType: 'application/x-www-form-urlencoded;charset=utf-8',
-                    //     success: function(data) {
-                    //         RosDialog.dialog.open(data.content);
-                    //     },
-                    //     error: function() {
-                    //         formState = true;
-                    //         RosDialog.dialog.open();
-                    //     }
-                    // });
-                }
-
-
-            }
             console.log(params);
+            if (formState) {
+                formState = false;
+                $.ajax({
+                    type: 'post',
+                    url: '/comment/save',
+                    data: params,
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                    success: function(data) {
+                        formState = true;
+                        RosDialog.dialog.open(data.content);
+                    },
+                    error: function() {
+                        formState = true;
+                        RosDialog.dialog.open();
+                    }
+                });
+            }
 
         }
     }

@@ -30,10 +30,9 @@
     visibility: hidden;
 }
 
-.blog-write .cover img {
+.blog-write img, .blog-data img {
     max-width: 960px;
 }
-
 
 .blog-data {
     padding: 10px;

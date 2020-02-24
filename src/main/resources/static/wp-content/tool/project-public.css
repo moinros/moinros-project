@@ -90,6 +90,7 @@ button {
 }
 
 textarea {
+
     overflow-x: hidden;
     resize: vertical;
     font-size: 16px;
@@ -99,6 +100,7 @@ textarea {
     border: 1px solid #ccc;
     color: #678;
     outline: none;
+
 }
 
 textarea:focus {
@@ -339,13 +341,9 @@ pre code {
 
 
 /*----------|----------|header.css|----------|----------*/
-#app {
-    margin-top: 60px;
-}
 
 .site-header {
     background-color: #2a9bff;
-    position: fixed;
     top: 0px;
     display: block;
     width: 100%;
@@ -472,6 +470,7 @@ pre code {
     float: right;
     margin: 0px 10px 0px 10px;
     padding: 0px 10px 0px 10px;
+    z-index: 999;
 }
 
 .nav-user-center .user-img {
@@ -564,7 +563,7 @@ pre code {
 
 
 /*----------|----------|footer.css|----------|----------*/
-.comment-editor {
+/*.comment-editor {
     background-color: #fff;
     padding: 10px;
 }
@@ -698,7 +697,7 @@ pre code {
 .comment-editor .comt-center .center-info input:focus {
     border: 1px solid #00c3ff;
     box-shadow: 0px 0px 4px 0px #87e3ff;
-}
+}*/
 
 /*----------|----------|dialog.css|----------|----------*/
 /*

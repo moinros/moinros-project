@@ -34,6 +34,8 @@ public class CommentSqlProvider {
 			{
 				SELECT(SELECT_SQL);
 				FROM("`comment` AS `c`");
+				FROM("`user_data` AS `ud`");
+				WHERE("`c`.`user_id` = `ud`.`user_id`");
 				WHERE("`c`.`page_mark` = #{pageMark}");
 				WHERE("`c`.`comment_state` = 1");
 				ORDER_BY("`c`.`reply_time` DESC");
@@ -46,6 +48,8 @@ public class CommentSqlProvider {
 			{
 				SELECT(SELECT_SQL);
 				FROM("`comment` AS `c`");
+				FROM("`user_data` AS `ud`");
+				WHERE("`c`.`user_id` = `ud`.`user_id`");
 				WHERE("`c`.`reply_id` = #{replyId}");
 				WHERE("`c`.`comment_state` = 1");
 				ORDER_BY("`c`.`reply_time` DESC");
@@ -58,6 +62,8 @@ public class CommentSqlProvider {
 			{
 				SELECT(SELECT_SQL);
 				FROM("`comment` AS `c`");
+				FROM("`user_data` AS `ud`");
+				WHERE("`c`.`user_id` = `ud`.`user_id`");
 				WHERE("`c`.`id` = #{id}");
 				WHERE("`c`.`comment_state` = 1");
 				ORDER_BY("`c`.`reply_time` DESC");
@@ -71,6 +77,8 @@ public class CommentSqlProvider {
 			{
 				SELECT(SELECT_SQL);
 				FROM("`comment` AS `c`");
+				FROM("`user_data` AS `ud`");
+				WHERE("`c`.`user_id` = `ud`.`user_id`");
 				if (comment.getId() != null) {
 					WHERE("`c`.`id` = #{id}");
 				}

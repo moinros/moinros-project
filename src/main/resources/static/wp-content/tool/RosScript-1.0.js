@@ -67,6 +67,22 @@
                 if (!ele || ele === document) return false;
                 return ele === target ? true : RosScript.dom.isTargetSon(ele.parentNode, target);
             },
+
+            winload: {
+                list: new Array(),
+                // 添加指定函数名的函数
+                add: function(fnName, fn) {
+
+                },
+                // 查找指定函数名的函数
+                find: function(fnName) {
+                },
+                run: function() {
+                    window.onload = function() {
+
+                    }
+                },
+            }
         },
 
         /**

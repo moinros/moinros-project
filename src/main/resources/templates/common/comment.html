@@ -2,57 +2,138 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
 <th:block th:fragment="comment">
     <article class="article" id="respond_editor">
-        <div class="comment-editor clearfix">
-            <p class="box-title">评论</p>
-            <form id="CommentEditor">
-                <!--<div class="comt-reply-link"><label>回复::</label><span id="comt_reply_link"></span></div>-->
-                <div class="avatar-box">
-                    <img class="avatar" th:src="|${session.USER_DATA != null ? session.USER_DATA.imagePath : '/wp-content/img/user/moren.tou.jpg'}|">
-                </div>
-                <div class="float-right">
-                    <div class="editor-box">
-                        <textarea class="comt-area" name="article" id="editor_box"></textarea>
-                        <div class="editor_box_tips" id="editor_box_tips"><span class="tips"></span></div>
-                        <div class="comt-ctrl">
-                            <a type="submit" class="button" id="EditorSubmit">评论</a>
-                        </div>
-                    </div>
-                    <div class="comt-center clearfix" id="comment_author_info" th:if="${session.USER_DATA == null}">
-                        <div class="float-left">
-                            <p>你还没有登录！<a style="color: #2a9bff;text-decoration: underline;"
-                                         onclick="RosDialog.dialog.login()">登录</a></p>
-                            <div>如果你没有注册账号，</div>
-                            <div>请至少填写一个昵称和邮箱</div>
-                        </div>
-                        <div class="center-info">
-                            <ul>
-                                <li><label type="title">昵&nbsp;&nbsp;称</label><input id="centerNickName" type="text"
-                                                                                     name="nickName"
-                                                                                     placeholder="昵称（必填）"
-                                                                                     autocomplete="off"/><span
-                                        class="tips"></span></li>
-                                <li><label type="title">邮&nbsp;&nbsp;箱</label><input id="centerEmail" type="text"
-                                                                                     name="email" placeholder="邮箱（必填）"
-                                                                                     autocomplete="off"/><span
-                                        class="tips"></span></li>
-                                <li><label type="title">链&nbsp;&nbsp;接</label><input id="centerLink" type="url"
-                                                                                     name="link" placeholder="链接（选填）"
-                                                                                     autocomplete="off"/><span
-                                        class="tips"></span></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+        <div id="comment-editor" class="comment-editor"></div>
+        <h3>网友评论</h3>
+        <div id="comment-list" class="comment-list"></div>
     </article>
     <script>
         (function() {
             // 引入编辑器需要的JS文件
             let scriptBox = document.createElement("script");
-            scriptBox.src = "/wp-content/tool/util/RosCommentEditor.js";
+            scriptBox.src = "/wp-content/tool/util/XMComment.js";
             scriptBox.type = "text/javascript";
             document.body.appendChild(scriptBox);
+
+            let pageMark = getPageMark();
+            let userData = getUserData();
+
+            let formState = true;
+            scriptBox.onload = function() {
+                let comment = new XMComment("#comment-editor");
+                comment.create({
+                    EVENT: {
+                        editor: {
+                            focus: function() {
+                                if (!userData) {
+                                    RosDialog.dialog.open("你还没没有登录,是否先登录？", 0, function() {
+                                        RosDialog.dialog.login();
+                                    });
+                                }
+                            }
+                        },
+                        submit: {
+                            click: function(text) {
+                                if (!$C.fns.valueIsNull(text.value)) {
+                                    comment.showTips("请输入评论内容！");
+                                } else {
+
+                                    let params = {
+                                        article: text.value,
+                                        mark: pageMark.mark,
+                                        url: window.location.href,
+                                    };
+
+                                    submitFrom(params);
+                                }
+                            }
+                        },
+                    }
+                });
+            };
+
+            function getUserData() {
+                let user = document.getElementById("USER_CENTER");
+                if (user) {
+                    let data = user.getAttribute("data");
+                    if (data) return eval(data);
+                }
+                return null;
+            }
+
+            function getPageMark() {
+                let page_mark = document.getElementById("xm_page_mark");
+                if (page_mark) {
+                    if (page_mark.value) return eval(page_mark.value);
+                }
+                return null;
+            }
+
+            function submitFrom(params) {
+                if (userData != null) {
+                    if (formState) {
+                        formState = false;
+                        $.ajax({
+                            type: 'post',
+                            url: '/comment/save',
+                            data: params,
+                            dataType: 'json',
+                            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                            success: function(data) {
+                                formState = true;
+                                RosDialog.dialog.open(data.content, 5000);
+                            },
+                            error: function() {
+                                formState = true;
+                                RosDialog.dialog.open();
+                            }
+                        });
+                    }
+                } else {
+                    RosDialog.dialog.open("你还没没有登录,是否先登录？", 0, function() {
+                        RosDialog.dialog.login();
+                    });
+                }
+            }
+
+
+            $.ajax({
+                type: 'get',
+                url: '/comment/find/list?mark=' + pageMark.mark,
+                dataType: 'json',
+                contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+                success: function(data) {
+                    if (data && data.state == 'success') {
+                        if (data.content && data.content.length > 0) {
+                            $D("#comment-list").append(sort(data.content));
+                        }
+                    }
+                },
+            });
+
+
+            function sort(list) {
+                let table = $D("<ul></ul>");
+                for (let i = 0; i < list.length; i++) {
+                    table.append($D("<li class='item clearfix'></li>").html(mapping(list[i])));
+                }
+                return table;
+            }
+
+            function mapping(obj) {
+                let html =
+                    "<div class='c-li-avatar'>" +
+                    "<a><img class='c-li-face' src='" + obj.imagePath + "'></a></div>" +
+                    "<div class='c-li-main'>" +
+                    "<div class='c-li-meta'>" +
+                    "<a><span class='c-li-author'>" + obj.nickName + "</span></a>" +
+                    "<span class=c-li-time>" + obj.replyTime + "</span>" +
+                    "<span class=c-reply-link href=#comment-editor>回复</span>" +
+                    "</div>" +
+                    "<div class=c-li-text>" + obj.replyContent + "</div>" +
+                    "</div>"
+                return html;
+            }
+
         })();
     </script>
 </th:block>

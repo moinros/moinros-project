@@ -1,5 +1,6 @@
 package com.moinros.project.service.other;
 
+import com.moinros.project.common.annotation.base64.Base64Decoder;
 import com.moinros.project.common.annotation.base64.Base64Encoder;
 import com.moinros.project.common.annotation.base64.Base64EncoderParam;
 import com.moinros.project.model.dao.other.CommentMapper;
@@ -25,12 +26,14 @@ public class CommentServiceImpl implements CommentService {
     private CommentMapper mapper;
 
     @Override
+    @Base64Decoder
     public List<Comment> findListByMark(String mark) {
         List li = mapper.selectCommentByMark(mark);
         return li != null && li.size() > 0 ? li : null;
     }
 
     @Override
+    @Base64Decoder
     public List<Comment> findCommentByReply(Integer replyId) {
         List li = mapper.selectCommentByReply(replyId);
         return li != null && li.size() > 0 ? li : null;

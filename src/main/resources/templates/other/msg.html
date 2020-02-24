@@ -2,14 +2,23 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="zh-Hans">
 <head>
     <th:block th:replace="common/head :: head"></th:block>
+    <link rel="stylesheet" type="text/css" th:href="@{/wp-content/plugins/css/app-index.css}"/>
     <title>留言板 - 晓默的博客</title>
 </head>
-<body id="app" th:data="|({'pageMark':${PAGE_MARK}})|">
+<body>
 <th:block th:replace="common/header :: header"></th:block>
 <th:block th:replace="common/focus :: focus"></th:block>
-<section class="container">
-    <div class="central">
-        <th:block th:replace="common/comment :: comment"></th:block>
+<section class="html-section">
+    <div class="central clearfix">
+
+        <div class="container float-left">
+
+            <th:block th:replace="common/comment :: comment"></th:block>
+
+        </div>
+
+        <th:block th:replace="sidebar :: sidebar"></th:block>
+
     </div>
 </section>
 <th:block th:replace="common/footer :: footer"></th:block>
