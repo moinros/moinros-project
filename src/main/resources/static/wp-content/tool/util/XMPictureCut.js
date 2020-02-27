@@ -255,7 +255,7 @@
         },
         // 增加子节点
         append: function append($Dhildren) {
-            console.log(this.forEach);
+            // console.log(this.forEach);
             return this.forEach(function(elem) {
                 $Dhildren.forEach(function(child) {
                     elem.appendChild(child);
@@ -480,6 +480,8 @@
         originalSize: true,
         // 封装了裁剪区动态参数的函数,裁剪框没移动一次即调用一次,可用于显示动态的尺寸信息等数据
         cropView: void 0,
+        // 初始化完成后调用此方法
+        initMethod: void 0,
         // 上传文件数据时参数名
         formName: 'file',
         // 插件
@@ -497,7 +499,7 @@
                 selector: ".XMPictureCut",
                 list: [
                     {key: "position", val: "relative"},
-                    {key: 'width', val: '1000px'},
+                    {key: 'width', val: '100%'},
                     {key: 'margin', val: 'auto'},
                     {key: 'user-select', val: 'none'},
                 ]
@@ -718,7 +720,7 @@
 
         // 插件的DOM结构
         this.framework = Object.assign($f, $framework);
-        console.log(this.config);
+        // console.log(this.config);
         // 插件ID
         this.id = $id;
         // 编号
@@ -736,10 +738,20 @@
     // 修改原型
     PictureCut.prototype = {
         constructor: PictureCut,
-        getImageBase64: function() {
-            console.log(this);
-            if (this.config.originalSize) {
+
+        // 设置是否等比例缩放裁剪框
+        isFreeScaling: function(bl) {
+            if (bl === true || bl === false) {
+                this.config.freeScaling = bl;
             }
+            return this.config.freeScaling;
+        },
+        // 获取裁剪区尺寸数据
+        getViewSize: function() {
+            return this.framework.view.result;
+        },
+        // 将裁剪出的图片转换为Base64格式返回
+        getImageBase64: function() {
             let image = this.framework.nativeImage;
             let size = this.framework.view.result;
             let nw = image.naturalWidth;
@@ -997,11 +1009,13 @@
 
             if ($this.config.plugin.restore) {
                 $D($this.config.plugin.restore).on("click", function() {
-                    $this.initView();
+                    if ($this.start_up) {
+                        $this.initView();
+                    } else {
+                        alert("请先选择图片！");
+                    }
                 });
             }
-
-
         },
         // 加载本地图片
         loadingImage: function(e) {
@@ -1039,6 +1053,7 @@
                         $f.viewImage = $D(viewImage).attr("src", fr.result).css("position", "absolute").insertTarget($f.previewBox).getElement(0);
                         $this.initViewList(fr);
                         $this.initView();
+                        $this.start_up = true;
                     }
                 };
             } else {
@@ -1046,6 +1061,19 @@
             }
         },
 
+        // 设置裁剪区尺寸数据
+        setViewSize: function(dx, dy, dw, dh) {
+            let $f = this.framework;
+            let $r = this.framework.view.result;
+            // 坐标数据检查,防止裁剪框移除裁剪区
+            dx = (dx < 0 ? 0 : dx > $r.viewWidth ? $r.viewWidth : dx);
+            dy = (dy < 0 ? 0 : dy > $r.viewHeight ? $r.viewHeight : dy);
+            dw = (dw < 0 ? 0 : dw > $r.viewWidth - dx ? $r.viewWidth - dx : dw);
+            dh = (dh < 0 ? 0 : dh > $r.viewHeight - dy ? $r.viewHeight - dy : dh);
+            $D($f.drag).left(dx).top(dy).width(dw).height(dh);
+            this.setClip();
+            this.showViewList();
+        },
         /**
          * 初始化裁剪框尺寸坐标
          */
@@ -1072,6 +1100,7 @@
             this.bindEvent();
         },
     };
+
 
     function PictureCutFactory() {
 
@@ -1130,7 +1159,7 @@
             if ($config.plugin.fileInput) {
                 $fileInput = $D($config.plugin.fileInput).getElement(0);
             } else {
-                $fileInput = $D("<input type='file'/>").insertTarget($D("<div class='xm-pc-file-box'></div>").insertTarget($XMPictureCutBox)).attr("name", $config.formName).getElement(0);
+                $fileInput = $D("<input type='file' accept='image/*'/>").insertTarget($D("<div class='xm-pc-file-box'></div>").insertTarget($XMPictureCutBox)).attr("name", $config.formName).getElement(0);
             }
             return {
                 SELECTOR_BOX: $SelectorBox,
@@ -1157,20 +1186,49 @@
         },
         _getPictureCut: function _getPictureCut(conf, selector, $id) {
             let $config = this._initConfig(conf);
-            console.log($config);
+            // console.log($config);
             let $framework = this._initDOM(selector, $config, $id);
             this._initCSS($config.CSS);
             let picture = new PictureCut($config, $framework, $id);
+            let method = picture.config.initMethod;
+            if (method) {
+                method();
+            }
             return {
                 $getImage: () => {
+                    if (!picture.start_up) {
+                        alert("请先选择图片！");
+                        return void 0;
+                    }
                     return picture.getImageBase64()
                 },
                 $setView: (dx, dy, dw, dh) => {
-                    picture.initView();
+                    if (!picture.start_up) {
+                        alert("请先选择图片！");
+                        return void 0;
+                    }
+                    if (REGEX_NUMBER.test(dx) && REGEX_NUMBER.test(dy) && REGEX_NUMBER.test(dw) && REGEX_NUMBER.test(dh)) {
+                        picture.setViewSize(dx, dy, dw, dh);
+                    } else {
+                        alert("只能输入正数！");
+                    }
+                },
+                $getViewSize: () => {
+                    if (!picture.start_up) {
+                        alert("请先选择图片！");
+                        return void 0;
+                    }
+                    return picture.getViewSize()
+                },
+                $isFreeScaling: (bl) => {
+                    return picture.isFreeScaling(bl)
                 },
             };
         }
     };
+    const REGEX_NUMBER = /^(0|[0-9]+\.?[0-9]+)$/;
+
+
     // 插件编号
     let XM_PC_ID_INDEX = 1;
 
@@ -1194,9 +1252,27 @@
         create: function create(conf) {
             let factory = new PictureCutFactory();
             let picture = factory._getPictureCut(conf, this.selector, this.XM_PC_ID);
+            // 将裁剪后的图片转换为Base64格式返回
             this.getImage = picture.$getImage;
+            // 设置尺寸数据
             this.setView = picture.$setView;
+            // 获取当前裁剪区的尺寸数据
+            this.getViewSize = picture.$getViewSize;
+            // 设置是否等比例缩放裁剪框
+            this.isScaling = picture.$isFreeScaling;
         },
+        // 将base64转换为文件
+        dataURLtoFile: function(dataurl, filename) {
+            let arr = dataurl.split(',');
+            let mime = arr[0].match(/:(.*?);/)[1];
+            let bstr = atob(arr[1]);
+            let n = bstr.length;
+            let u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new File([u8arr], filename, {type: mime});
+        }
 
     };
 

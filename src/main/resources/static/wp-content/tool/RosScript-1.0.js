@@ -4,12 +4,12 @@
 (function() {
 
     const RosScript = {
-        ajax: {
-            contentType: {
-                json: 'application/json;charset=utf-8',
-                form: 'application/x-www-form-urlencoded;charset=utf-8',
-            },
-        },
+        // ajax: {
+        //     contentType: {
+        //         json: 'application/json;charset=utf-8',
+        //         form: 'application/x-www-form-urlencoded;charset=utf-8',
+        //     },
+        // },
         /**
          * 常用的正则表达式
          */
@@ -218,6 +218,17 @@
                     fn();
                 }
             },
+
+            copyObject: function() {
+                let val = {};
+                for (let i = 0; i < arguments.length; i++) {
+                    for (let name in arguments[i]) {
+                        val[name] = arguments[i][name];
+                    }
+                }
+                return val;
+            },
+
             /**
              * 定时器
              * @param fn 需要执行的函数
@@ -831,6 +842,8 @@
         },
     };
 
+    window.$C = RosScript;
+
     const WEEK_NUMBER = ['日', '一', '二', '三', '四', '五', '六'];
     /**
      * 与时间相关的函数
@@ -850,6 +863,73 @@
             };
         }
     };
+
+    RosScript.ajax = function(conf) {
+        let target = {
+            type: 'get',
+            url: void 0,
+            data: void 0,
+            async: true,
+            dataType: 'json',
+            contentType: void 0,
+            success: void 0,
+            error: void 0,
+        };
+        let data = $C.fns.copyObject(target, conf);
+        if (data.type.toLowerCase() == 'get') {
+            $Ajax.get(data);
+        } else if (data.type.toLowerCase() == 'post') {
+            $Ajax.post(data);
+        } else {
+            throw new Error("数据格式错误！");
+        }
+    };
+    //Object.assign({},{});
+    const $Ajax = {
+        post: function(conf) {
+            let target = {
+                contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+            };
+            let data = $C.fns.copyObject(target, conf);
+            $Ajax.send(data);
+        },
+        get: function(conf) {
+            $Ajax.send(conf);
+        },
+        send: function(conf) {
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    if (xhr.status == 200 || xhr.status == 304) {
+                        if (conf.success != null) {
+                            conf.success(JSON.parse(xhr.responseText));
+                        }
+                    } else {
+                        if (conf.error != null) {
+                            conf.error(xhr.responseText);
+                        }
+                    }
+                }
+            };
+            if (conf.error != null) {
+                xhr.onerror = conf.error;
+            }
+            xhr.upload.onprogress = function(event) {
+                //获取进度的百分比值
+                let percent = (event.loaded / event.total) * 100;
+
+                //四舍五入保留0位小数
+                percent = percent.toFixed(0);
+                console.log(percent);
+            }
+            xhr.open(conf.type, conf.url, conf.async);
+            xhr.send(conf.data);
+            if (conf.contentType != null) {
+                xhr.setRequestHeader('Content-type', conf.contentType);
+            }
+        }
+    };
+
     /**
      * 在兄弟元素或者兄弟元素的子元素中查找指定className的元素
      * @param e DOM元素对象
@@ -906,5 +986,5 @@
         return getSon(son, n)
     }
 
-    window.$C = RosScript;
+
 })();

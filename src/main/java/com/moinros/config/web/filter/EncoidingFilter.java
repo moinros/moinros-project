@@ -26,6 +26,13 @@ public class EncoidingFilter implements javax.servlet.Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         request.setCharacterEncoding("utf-8");
         request.setAttribute("focustext", "向着梦的方向艰难前行！");
+        // 设置跨域请求头
+        // 允许哪些站点可以访问 "*" 表示所有站点
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+//        // 允许可执行的方法
+//        response.setHeader("Access-Control-Allow-Method", "post,get");
+//        // 指定检测请求的有效期，单位秒
+//        response.addHeader("Access-Control-Max-Age", "180");
         response.setCharacterEncoding("utf-8");
         response.setContentType("txt/html;charset=utf-8");
         chain.doFilter(request, response);

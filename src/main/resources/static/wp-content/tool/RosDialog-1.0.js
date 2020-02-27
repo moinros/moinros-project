@@ -203,6 +203,12 @@
                         RosDialog.dialog.close(dialogBox);
                     }, time);
                 }
+
+                return {
+                    close: () => {
+                        RosDialog.dialog.close(dialogBox);
+                    }
+                };
             },
 
             /**
@@ -528,159 +534,187 @@
 
             /**
              * 弹出图片上传框
+             * @param url 上传的URL
+             * @param callback 上传完成后的回调函数
              */
-            image: function() {
-                let fileInput;
-                let fileBox;
-                let image;
-                let imageBg;
-                let crop;
-                let drag;
-                let cropView;
-                let cropFace;
-                let IMAGE_WIDTH; // 背景图宽度
-                let IMAGE_HEIGHT; // 背景图高度
-                let IMAGE_FACE; // 背景图DOM元素
-                initBox({
+            image: function(url, callback) {
+                if (!url) {
+                    url = "https://www.server-file.com/server/file/upload/binary";
+                }
+                let picture;
+                let restore;
+                let scaling;
+                let DX;
+                let DY;
+                let DW;
+                let DH;
+                let up_button;
+                let uploadBox = initBox({
                     title: '图片上传',
                     boxName: 'upload-box',
                     content: function() {
                         let box = document.createElement("div");
-                        box.className = "upload-form";
-                        fileBox = document.createElement("div");
-                        fileBox.className = "file-box";
+                        box.className = "clearfix";
+                        let PictureCutBox = document.createElement("div");
+                        PictureCutBox.className = "xm-pc-model-box";
+                        box.appendChild(PictureCutBox);
 
-                        image = document.createElement('img');
-                        image.className = "file-box-image";
-                        imageBg = document.createElement('div');
-                        imageBg.className = "file-box-image-bg";
-                        fileBox.appendChild(image);
-                        fileBox.appendChild(imageBg);
+                        let tableBox = document.createElement("div");
+                        tableBox.className = "xm-up-img-small";
+                        box.appendChild(tableBox);
+                        // let view_1 = document.createElement("div");
+                        // view_1.className = "xm-up-img-view-1";
+                        let view_2 = document.createElement("div");
+                        view_2.className = "xm-up-img-view-2";
+                        let view_3 = document.createElement("div");
+                        view_3.className = "xm-up-img-view-3";
+                        //tableBox.appendChild(view_1);
+                        tableBox.appendChild(view_2);
+                        tableBox.appendChild(view_3);
 
-                        drag = document.createElement("div");
-                        drag.className = "file-box-drag";
-                        imageBg.appendChild(drag);
-                        crop = document.createElement('div');
-                        crop.className = "file-box-crop";
-                        cropView = document.createElement('span');
-                        cropView.className = "crop-point-view";
-                        crop.appendChild(cropView);
-                        cropFace = document.createElement('span');
-                        cropFace.className = "crop-point-face";
-                        crop.appendChild(cropFace);
+                        let cropView = document.createElement("ul");
+                        cropView.className = "xm-up-img-v-list";
+                        cropView.style.padding = "5px";
+                        cropView.style.margin = "0px";
 
-                        let point_nw = document.createElement('span');
-                        point_nw.className = "crop-point point-nw";
-                        let point_ne = document.createElement('span');
-                        point_ne.className = "crop-point point-ne";
-                        let point_sw = document.createElement('span');
-                        point_sw.className = "crop-point point-sw";
-                        let point_se = document.createElement('span');
-                        point_se.className = "crop-point point-se";
-                        crop.appendChild(point_nw);
-                        crop.appendChild(point_ne);
-                        crop.appendChild(point_sw);
-                        crop.appendChild(point_se);
-                        imageBg.appendChild(crop);
+                        let divDX = document.createElement("li");
+                        divDX.innerHTML = "<label>X</label>";
+                        DX = document.createElement("input");
+                        DX.type = "text";
+                        divDX.appendChild(DX)
+                        cropView.appendChild(divDX);
 
-                        box.appendChild(fileBox);
+                        let divDY = document.createElement("li");
+                        divDY.innerHTML = "<label>Y</label>";
+                        DY = document.createElement("input");
+                        DY.type = "text";
+                        divDY.appendChild(DY)
+                        cropView.appendChild(divDY);
 
-                        let fileInfo = document.createElement("div");
-                        fileInfo.className = "file-info";
-                        box.appendChild(fileInfo);
+                        let divDW = document.createElement("li");
+                        divDW.innerHTML = "<label>W</label>";
+                        DW = document.createElement("input");
+                        DW.type = "text";
+                        divDW.appendChild(DW)
+                        cropView.appendChild(divDW);
 
+                        let divDH = document.createElement("li");
+                        divDH.innerHTML = "<label>H</label>";
+                        DH = document.createElement("input");
+                        DH.type = "text";
+                        divDH.appendChild(DH)
+                        cropView.appendChild(divDH);
+
+                        tableBox.appendChild(cropView);
+
+                        restore = document.createElement("button");
+                        restore.id = "xm_up_img_restore";
+                        restore.innerHTML = "重置";
+                        tableBox.appendChild(restore);
+
+                        let labelElem = document.createElement("label");
+                        labelElem.innerHTML = "<span>是否等比例缩放</span>";
+                        scaling = document.createElement("input");
+                        scaling.type = 'checkbox';
+                        labelElem.appendChild(scaling);
+                        tableBox.appendChild(labelElem);
+
+                        let div_line = document.createElement("div");
+                        up_button = document.createElement("button");
+                        up_button.innerText = "裁剪并上传";
+                        div_line.appendChild(up_button);
+                        tableBox.appendChild(div_line);
+
+                        // 构建图片裁剪模块
+                        picture = new XMPictureCut(PictureCutBox);
+                        picture.create({
+                            freeScaling: true,
+                            aspectRatio: 1 / 1,
+                            plugin: {
+                                restore: restore,
+                                preview: [".xm-up-img-view-1", ".xm-up-img-view-2", ".xm-up-img-view-3"],
+                            },
+                            cropView: function(view) {
+                                DX.value = view.dragLeft;
+                                DY.value = view.dragTop;
+                                DW.value = view.dragWidth;
+                                DH.value = view.dragHeight;
+                            },
+                            initMethod: function() {
+                                console.log("[ XMPictureCut ] 初始化完成！");
+                            },
+                        });
+                        scaling.checked = picture.isScaling();
                         return box;
                     },
-                    button: function() {
-                        let buttonBox = document.createElement("div");
-                        fileInput = document.createElement("input");
-                        fileInput.type = "file";
-                        fileInput.name = "file";
-                        buttonBox.appendChild(fileInput);
-                        return buttonBox;
+                });
+
+
+                $C.bindEvent.add(up_button, 'onclick', function() {
+                    let image = picture.getImage();
+                    if (image) {
+                        uploadFile(image);
                     }
                 });
 
-                /**
-                 * 为input框绑定Event事件,选择文件时触发
-                 */
-                $C.bindEvent.add(fileInput, 'onchange', function() {
-                    let file = this.files[0];
-                    if (file != undefined && file != null) {
-                        // 判断是文件是否为图片
-                        if ((file.type).indexOf("image/") >= 0) {
-                            // 使用Promise异步读取文件
-                            let fr = new FileReader();
-                            let prom = new Promise(function(resolve, reject) {
-                                resolve(fr.readAsDataURL(file));
-                                fr.onerror = function() {
-                                    RosDialog.dialog.open("读取文件出错！请重试！", 5000);
-                                };
-                            });
-                            prom.then(function() {
-                                // 文件读取完成后将读取到的图片设置到文件预览框内
-                                fr.onload = function(theFile) {
-                                    image.src = theFile.target.result;
-                                    //imageBg.style.backgroundImage = "url(" + fr.result + ")";
-                                    // 设置预览背景图片的高度(宽度固定为400px)
-                                    if (IMAGE_FACE != null) {
-                                        IMAGE_FACE.parentNode.removeChild(IMAGE_FACE);
-                                    }
-                                    IMAGE_FACE = new Image();
-                                    IMAGE_FACE.src = theFile.target.result;
-                                    cropView.appendChild(IMAGE_FACE);
-                                    image.onload = function() {
-                                        imageBg.style.height = image.height + 'px';
-                                        crop.style.display = 'block';
-                                        IMAGE_WIDTH = IMAGE_FACE.width = image.width;
-                                        IMAGE_HEIGHT = IMAGE_FACE.height = image.height;
-                                        IMAGE_FACE.style.transform = "translateX(0px) translateY(0px)";
-                                        crop.style.left = '0px';
-                                        crop.style.top = '0px';
-                                    };
-                                };
-                            });
-                        } else {
-                            $C.dialog.open("你选择的文件不是图片哦~", 5000);
-                            return;
-                        }
+                let formState = true;
+
+                function uploadFile(image) {
+                    let formData = new FormData();
+                    let file = picture.dataURLtoFile(image.data, Date.now() + '.jpeg');
+                    formData.append("file", file);
+                    let close = RosDialog.dialog.wait();
+                    if (formState) {
+                        formState = false;
+                        $C.ajax({
+                            type: 'post',
+                            data: formData,
+                            url: 'https://www.server-file.com/server/file/upload/binary/face',
+                            success: function(data) {
+                                formState = true;
+                                if (data.state == 'success') {
+                                    callback(data.result, () => {
+                                        RosDialog.dialog.close(uploadBox);
+                                    });
+                                }
+                                close()
+                                RosDialog.dialog.open(data.content, 5000);
+                            },
+                            error: function() {
+                                formState = true;
+                                close()
+                                RosDialog.dialog.open();
+                            }
+                        });
                     }
+                }
+
+
+                $C.bindEvent.add(scaling, 'onclick', function() {
+                    picture.isScaling(this.checked);
                 });
 
-                /**
-                 * 点击选择框移动坐标
-                 */
-                $C.bindEvent.add(crop, 'onmousedown', function(e) {
-                    //鼠标点击物体那一刻相对于物体左侧边框的距离=点击时的位置相对于浏览器最左边的距离-物体左边框相对于浏览器最左边的距离  
-                    let diffX = e.clientX - crop.offsetLeft; // 预览框X坐标
-                    let diffY = e.clientY - crop.offsetTop; // 预览框Y坐标
-                    let seX = crop.offsetWidth; // 预览框宽度
-                    let seY = crop.offsetHeight; // 预览框高度
-                    document.onmousemove = function(e) {
-                        //   console.log("X = " + diffX + " - Y = " + diffY);
-                        let left = e.clientX - diffX;
-                        let top = e.clientY - diffY;
-                        let Ileft = e.clientX + diffX;
-                        let Itop = e.clientY - diffY;
-                        //   console.log(left + "  -  " + top + " | " + Ileft + "  -  " + Itop);
-                        // 限制预览框只能在背景图片范围内滑动
-                        if (left < 0) left = 0;
-                        if (left + seX > IMAGE_WIDTH) left = IMAGE_WIDTH - seX;
-                        if (top < 0) top = 0;
-                        if (top + seY > IMAGE_HEIGHT) top = IMAGE_HEIGHT - seY
-                        //移动时重新得到物体的距离，解决拖动时出现晃动的现象  
-                        crop.style.left = left + 'px';
-                        crop.style.top = top + 'px';
-                        // 设置背景图相对位置,实现预览框在背景图上的滑动
-                        IMAGE_FACE.style.transform = "translateX(" + -left + "px) translateY(" + -top + "px)";
-                    };
-                    //当鼠标弹起来的时候不再移动  
-                    document.onmouseup = function(e) {
-                        this.onmousemove = null
-                        //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动） 
-                        this.onmouseup = null;
-                    };
-                });
+                $C.bindEvent.add(DX, 'onblur', function() {
+                    let size = picture.getViewSize();
+                    $C.fns.clearBlank(this);
+                    if (size) picture.setView(this.value, size.dragTop, size.dragWidth, size.dragHeight);
+                })
+                $C.bindEvent.add(DY, 'onblur', function() {
+                    let size = picture.getViewSize();
+                    $C.fns.clearBlank(this);
+                    if (size) picture.setView(size.dragLeft, this.value, size.dragWidth, size.dragHeight);
+                })
+                $C.bindEvent.add(DW, 'onblur', function() {
+                    let size = picture.getViewSize();
+                    $C.fns.clearBlank(this);
+                    if (size) picture.setView(size.dragLeft, size.dragTop, this.value, size.dragHeight);
+                })
+                $C.bindEvent.add(DH, 'onblur', function() {
+                    let size = picture.getViewSize();
+                    $C.fns.clearBlank(this);
+                    if (size) picture.setView(size.dragLeft, size.dragTop, size.dragWidth, this.value);
+                })
+
             }
         }
     }
