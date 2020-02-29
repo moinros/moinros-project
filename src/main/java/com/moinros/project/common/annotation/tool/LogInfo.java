@@ -17,13 +17,13 @@ import java.lang.annotation.Target;
 public @interface LogInfo {
 
     /**
-     * 日志标记
-     *
-     * @return
+     * 标记日志关键字
      */
     String value() default "";
 
+    /**
+     * 日志输出类
+     */
     Class clazz() default Object.class;
-
 
 }

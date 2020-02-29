@@ -43,9 +43,9 @@ body {
 
 .thumbnail .cover-img {
     display: block;
-    background-position: center;
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: 100%;
+    background-position: center;
 }
 
 .thumbnail .cover-img:hover {
@@ -165,11 +165,16 @@ body {
 
 .aside-item .blog-latest .subject {
     width: 185px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .aside-item .blog-latest .subject a {
     color: #2a9bff;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
 }
 
 .aside-item .blog-latest .subject a:hover {

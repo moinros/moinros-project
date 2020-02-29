@@ -50,6 +50,14 @@ a:active {
     margin-bottom: 10px;
 }
 
+.blog-intro span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+}
+
 .blog-content {
     border: 1px solid #ff922b;
     padding: 5px;

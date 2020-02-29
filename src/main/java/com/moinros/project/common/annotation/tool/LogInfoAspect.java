@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- * 注释:
+ * 注释: AOP日志管理
  *
  * @Author moinros
  * @Date 2020/2/15 22:50
