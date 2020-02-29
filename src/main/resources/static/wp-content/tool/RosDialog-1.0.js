@@ -669,7 +669,7 @@
                         $C.ajax({
                             type: 'post',
                             data: formData,
-                            url: 'https://www.server-file.com/server/file/upload/binary/face',
+                            url: url,
                             success: function(data) {
                                 formState = true;
                                 if (data.state == 'success') {

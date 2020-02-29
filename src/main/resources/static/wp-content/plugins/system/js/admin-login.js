@@ -94,7 +94,7 @@
         if (FormState.username && FormState.password && FormState.checkcode) {
             if (FormState.submit) {
                 FormState.submit = false;
-                var closeDialog = $C.dialog.wait("登陆中···");
+                var closeDialog = RosDialog.dialog.wait();
                 // 获取表单数据
                 var data = $C.fns.getParameter(form);
                 $C.RSA.getPublicKey({
@@ -121,12 +121,12 @@
                                     return;
                                 }
                                 $C.fns.getCheckCodeImg(checkcodeImage);
-                                $C.dialog.open(data.content, 5000);
+                                RosDialog.dialog.open(data.content, 5000);
                             },
                             error: function() {
                                 FormState.submit = true;
                                 closeDialog();
-                                $C.dialog.open();
+                                RosDialog.dialog.open();
                             }
                         });
                     },

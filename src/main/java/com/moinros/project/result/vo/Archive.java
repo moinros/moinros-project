@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 注释:
+ * 注释: 文章归档
  *
  * @Author moinros
  * @WebSite www.moinros.com
@@ -15,8 +15,14 @@ import java.util.List;
  */
 public class Archive<T> {
 
+    /**
+     * 日期
+     */
     private DateInfo date;
 
+    /**
+     * 文章集合
+     */
     private List<T> list;
 
     public boolean add(T obj) {

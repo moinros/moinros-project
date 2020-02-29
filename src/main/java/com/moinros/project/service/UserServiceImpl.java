@@ -43,6 +43,11 @@ public class UserServiceImpl implements UserService {
                 if (f) {
                     UserData user = mapper.selectUserDataById(data.getUserId());
                     if (user != null) {
+                        UserData ud = new UserData();
+                        ud.setUserId(user.getUserId());
+                        ud.setLoginTime(DateFormatUtil.getDateTime());
+                        ud.setClientIp(client.getClientIp());
+                        mapper.updateUserData(ud);
                         rv.setState(UserServiceState.LOGIN_SUCCESS);
                         rv.setValue(user);
                         return rv;

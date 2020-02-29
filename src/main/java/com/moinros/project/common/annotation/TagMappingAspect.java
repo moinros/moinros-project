@@ -42,8 +42,10 @@ public class TagMappingAspect {
                 typeMapping((Blog) result);
             } else if (PageBean.class.isAssignableFrom(clazz)) {
                 PageBean bean = (PageBean)result;
-                for (int i = 0; i < bean.getList().size(); i++) {
-                    typeMapping((Blog) bean.getList().get(i));
+                if (bean.getList() != null) {
+                    for (int i = 0; i < bean.getList().size(); i++) {
+                        typeMapping((Blog) bean.getList().get(i));
+                    }
                 }
             }
         }

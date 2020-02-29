@@ -18,8 +18,9 @@
             let userData = getUserData();
 
             let formState = true;
+            let comment;
             scriptBox.onload = function() {
-                let comment = new XMComment("#comment-editor");
+                comment = new XMComment("#comment-editor");
                 comment.create({
                     EVENT: {
                         editor: {
@@ -79,8 +80,10 @@
                             dataType: 'json',
                             contentType: 'application/x-www-form-urlencoded;charset=utf-8',
                             success: function(data) {
+                                comment.removeText();
                                 formState = true;
                                 RosDialog.dialog.open(data.content, 5000);
+                                window.location.href = '/message.html';
                             },
                             error: function() {
                                 formState = true;

@@ -1,27 +1,31 @@
 package com.moinros;
 
-import com.moinros.project.tool.email.RosSenderEmail;
-import com.moinros.project.tool.email.sub.EmailConfig;
 import com.moinros.project.tool.util.date.DateFormatUtil;
 
+import java.util.Base64;
 import java.util.Date;
 
 public class DemoTest {
 
     public static void main(String[] args) {
-        // test2();
-        EmailConfig conf = EmailConfig.getConfig();
-        conf.setConfigPath("D:/java/config/moinros-config.properties");
-        conf.init();
+        Base64.Decoder decoder = Base64.getDecoder();
+        String str = "QWpheCDkvb/nlKggRm9ybURhdGEg6Leo5Z+f5LiK5Lyg5paH5Lu255qE6Zeu6aKY";
+        byte[] arr = decoder.decode(str);
 
-        RosSenderEmail rse = RosSenderEmail.getRosSenderEmail();
-
-        rse.setRecipient("邮件标题", "moinros@qq.com", "邮件的文本内容");
-        rse.threadSend(() -> {
-            System.out.println("邮件发送成功时调用");
-        }, () -> {
-            System.out.println("邮件发送失败时调用");
-        });
+        System.out.println(new String(arr));
+//        // test2();
+//        EmailConfig conf = EmailConfig.getConfig();
+//        conf.setConfigPath("D:/java/config/moinros-config.properties");
+//        conf.init();
+//
+//        RosSenderEmail rse = RosSenderEmail.getRosSenderEmail();
+//
+//        rse.setRecipient("邮件标题", "moinros@qq.com", "邮件的文本内容");
+//        rse.threadSend(() -> {
+//            System.out.println("邮件发送成功时调用");
+//        }, () -> {
+//            System.out.println("邮件发送失败时调用");
+//        });
 
     }
 

@@ -13,8 +13,7 @@
     <div class="central clearfix">
 
         <div class="container float-left">
-            <div class="section">
-
+            <div class="section" th:if="${pageBean != null}">
                 <article class="section-item clearfix" th:if="${pageBean.list != null}" th:each="blog : ${pageBean.list}">
                     <div class="item-subject"><a th:href="|/blog/${#strings.substringBefore(blog.blogTags, ',')}/${blog.blogId}|" th:text="${blog.blogSubject}"></a></div>
                     <div class="thumbnail float-left">
@@ -33,9 +32,9 @@
                         <label class="time float-right"><span th:text="${blog.editTime}"></span></label>
                     </div>
                 </article>
-
             </div>
-            <article class="xm-page-util">
+
+            <article class="xm-page-util" th:if="${pageBean != null}">
                 <div class="page-box-bar">
                     <a th:if="${pageBean.pageNo > 1}" href="?page=1" title="首页">&lt;&lt;</a>
                     <a th:if="${pageBean.pageNo > 1}" th:href="|?page=${pageBean.pageNo - 1}|" title="上一页">&lt;</a>

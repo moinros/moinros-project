@@ -1,5 +1,6 @@
 package com.moinros.project.controller.system;
 
+import com.moinros.project.common.annotation.tool.LogInfo;
 import com.moinros.project.model.pojo.system.AdminLog;
 import com.moinros.project.result.Reply;
 import com.moinros.project.result.enums.Status;
@@ -29,8 +30,6 @@ import java.io.IOException;
 @Controller
 public class AdminController {
 
-
-
     @Autowired
     private AdminService adminService;
 
@@ -40,6 +39,7 @@ public class AdminController {
      * 进入管理员登录页面
      */
     @GetMapping("/system/admin/login")
+    @LogInfo(value = "管理员登录页面", clazz = AdminController.class)
     public String loginPage() {
         return "plugin/system/admin-login";
     }
@@ -48,11 +48,12 @@ public class AdminController {
      * 登出
      */
     @GetMapping("/system/admin/logout")
+    @LogInfo(value = "管理员退出登录", clazz = AdminController.class)
     public String logout(HttpSession session) {
         var admin = session.getAttribute(StrConst.ADMIN_DATA);
         session.setAttribute(StrConst.ADMIN_DATA, null);
         if (admin != null) {
-             StrConst.setMessage("退出后台系统！", "返回网站首页", "/", session);
+            StrConst.setMessage("退出后台系统！", "返回网站首页", "/", session);
 
         } else {
             StrConst.setMessage("你还没有登录哦！", "返回网站首页", "/", session);
@@ -71,6 +72,7 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/system/admin/login")
+    @LogInfo(value = "管理员登录", clazz = AdminController.class)
     public Reply login(String username, String password, String checkcode, HttpServletRequest request) {
         HttpSession session = request.getSession();
         // 获取客户端消息头数据

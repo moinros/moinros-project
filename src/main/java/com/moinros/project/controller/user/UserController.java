@@ -1,5 +1,6 @@
 package com.moinros.project.controller.user;
 
+import com.moinros.project.common.annotation.tool.LogInfo;
 import com.moinros.project.common.annotation.tool.ParamIsNull;
 import com.moinros.project.model.dto.ResultValue;
 import com.moinros.project.model.dto.enums.CheckcodeState;
@@ -52,6 +53,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/register")
     @ParamIsNull(paramName = {"nickname", "password", "username", "checkcode"})
+    @LogInfo(value = "新用户注册", clazz = UserController.class)
     public Reply register(String nickname, String password, String username, String checkcode, HttpSession session) {
         Reply r = new WebReply();
         if (nickname != null && password != null && username != null && checkcode != null) {
@@ -99,6 +101,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/is/exist/user/email")
     @ParamIsNull(paramName = {"email"})
+    @LogInfo(value = "判断邮箱是否注册", clazz = UserController.class)
     public Reply isMailboxExist(@RequestBody String email) {
         Reply r = new WebReply();
         if (email != null) {
@@ -125,6 +128,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/is/exist/user/nickname")
     @ParamIsNull(paramName = {"nickName"})
+    @LogInfo(value = "判断昵称是否注册", clazz = UserController.class)
     public Reply isNicknameExist(@RequestBody String nickName) {
         Reply r = new WebReply();
         if (nickName != null) {
@@ -145,6 +149,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/login")
+    @LogInfo(value = "用户登录", clazz = UserController.class)
     public Reply login(String username, String password, String url, HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         WebReply r = new WebReply();
@@ -158,7 +163,7 @@ public class UserController {
                     nu = new NetworkUtil(request);
                 }
                 client.setClientIp(nu.getIpAddress());
-                client.setClientIp(nu.getClientOS());
+                client.setClientOS(nu.getClientOS());
                 client.setBrowserInfo(nu.getBrowserInfo());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -189,6 +194,7 @@ public class UserController {
     }
 
     @GetMapping("/logout")
+    @LogInfo(value = "用户退出登录", clazz = UserController.class)
     public String logout(String url, HttpSession session) {
         var user = session.getAttribute(StrConst.USER_DATA);
         if (user != null) {

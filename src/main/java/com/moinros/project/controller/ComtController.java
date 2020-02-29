@@ -1,5 +1,6 @@
 package com.moinros.project.controller;
 
+import com.moinros.project.common.annotation.tool.LogInfo;
 import com.moinros.project.common.annotation.tool.ParamIsNull;
 import com.moinros.project.model.pojo.Comment;
 import com.moinros.project.model.pojo.UserData;
@@ -42,6 +43,7 @@ public class ComtController {
 
     @PostMapping("/comment/save")
     @ParamIsNull(paramName = {"url", "mark", "article"})
+    @LogInfo(value = "保存评论", clazz = ComtController.class)
     public Reply save(Integer replyId, String url, String mark, String article, HttpSession session) {
         Reply r = new WebReply();
         UserData user = (UserData) session.getAttribute(StrConst.USER_DATA);

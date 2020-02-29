@@ -141,12 +141,6 @@ public class UserDataSqlProvider {
 				if (userData.getBirthday() != null) {
 					SET("`birthday` = #{birthday}");
 				}
-				if (userData.getUserPhone() != null) {
-					SET("`user_phone` = #{userPhone}");
-				}
-				if (userData.getUserEmail() != null) {
-					SET("`user_email` = #{userEmail}");
-				}
 				if (userData.getUserIntro() != null) {
 					SET("`user_intro` = #{userIntro}");
 				}
@@ -156,10 +150,7 @@ public class UserDataSqlProvider {
 				if (userData.getLoginTime() != null) {
 					SET("`login_time` = #{loginTime}");
 				}
-				if (userData.getRegisterTime() != null) {
-					SET("`register_time` = #{registerTime}");
-				}
-				WHERE("`ud`.`user_id` = #{userId}");
+				WHERE("`user_id` = #{userId}");
 			}
 		}.toString();
 	}

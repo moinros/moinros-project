@@ -1,5 +1,6 @@
 package com.moinros.project.controller.system;
 
+import com.moinros.project.common.annotation.tool.LogInfo;
 import com.moinros.project.common.annotation.tool.ParamIsNull;
 import com.moinros.project.common.annotation.web.MenuMark;
 import com.moinros.project.common.annotation.web.MenuTable;
@@ -38,6 +39,7 @@ public class SystemController {
 
     @GetMapping("/index")
     @MenuTable(value = {@MenuMark(name = "side_bar_meun", mark = "system")})
+    @LogInfo(value = "后台管理系统首页", clazz = SystemController.class)
     public String index() {
         return "plugin/system/system-index";
     }
@@ -52,6 +54,7 @@ public class SystemController {
 
     @GetMapping("/blog/update/{id}")
     @MenuTable(value = {@MenuMark(name = "side_bar_meun", mark = "system")})
+    @LogInfo(value = "后台管理 - 修改文章", clazz = SystemController.class)
     public String blogUpdate(@PathVariable(name = "id") Integer id, Model model, HttpSession session) {
         if (id != null) {
             Blog blog = blogService.findBlogById(id);
@@ -68,14 +71,15 @@ public class SystemController {
     @ResponseBody
     @PostMapping("/blog/update/save/{bid}")
     @ParamIsNull(paramName = {"cover", "subject", "intro", "tags", "content"})
+    @LogInfo(value = "后台管理 - 保存修改文章", clazz = SystemController.class)
     public Reply blogUpdateSave(String cover, String subject, String intro, String tags, String content, @PathVariable(name = "bid") Integer bid, HttpSession session) {
-
         return savaBlog(cover, tags, subject, content, intro, bid, session);
     }
 
     @ResponseBody
     @PostMapping("/blog/save")
     @ParamIsNull(paramName = {"cover", "subject", "intro", "tags", "content"})
+    @LogInfo(value = "后台管理 - 发布文章", clazz = SystemController.class)
     public Reply blogSave(String cover, String subject, String intro, String tags, String content, HttpSession session) {
         return savaBlog(cover, tags, subject, content, intro, null, session);
     }
@@ -101,6 +105,7 @@ public class SystemController {
 
     @GetMapping("/blog/find/{id}")
     @MenuTable(value = {@MenuMark(name = "side_bar_meun", mark = "system")})
+    @LogInfo(value = "后台管理 - 查找指定文章", clazz = SystemController.class)
     public String blogData(@PathVariable(name = "id") Integer id, Model model, HttpSession session) {
         Blog blog = blogService.findBlogById(id);
         if (blog != null) {
@@ -114,6 +119,7 @@ public class SystemController {
 
     @GetMapping("/blog/find/list")
     @MenuTable(value = {@MenuMark(name = "side_bar_meun", mark = "system")})
+    @LogInfo(value = "后台管理 - 查找文章列表", clazz = SystemController.class)
     public String blogList(Model model) {
         List li = blogService.findBlogLi();
         if (li != null) {
@@ -125,6 +131,7 @@ public class SystemController {
     @GetMapping("/blog/find/type")
     @ParamIsNull(paramName = "value")
     @MenuTable(value = {@MenuMark(name = "side_bar_meun", mark = "system")})
+    @LogInfo(value = "后台管理 - 文章分类管理", clazz = SystemController.class)
     public String blogType(String value, Model model) {
         if (value != null) {
             List li = blogService.findBlogByType(value);

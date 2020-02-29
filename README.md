@@ -30,3 +30,5 @@
     - 3.其他JavaScript插件的整合
         * 因为之前几天都在弄自己写的JS插件,再加上以前写的一些常用插件,乱七八糟的,必须得想办法整合一下
         * [我的JS插件部分源码Github传送门](https://github.com/moinros/moinros-node-tool)
+#### 2020/2/27 ####
+* 调整了图片上传组件API

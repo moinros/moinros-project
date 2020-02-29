@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.moinros'
-version = '1.2'
+version = '1.2.1'
 sourceCompatibility = '12'
 
 repositories {
@@ -34,7 +34,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 
     //开启项目热部署
-    implementation 'org.springframework.boot:spring-boot-devtools'
+   // implementation 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

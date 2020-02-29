@@ -59,8 +59,10 @@ public class PageController {
     @PageMark(mark = "archive", name = "归档")
     public String archive(Model model) {
         List<Blog> li = blogService.findTitle();
-        List<Archive> archives = sort(li);
-        model.addAttribute("archives", archives);
+        if (li != null && li.size() > 0) {
+            List<Archive> archives = sort(li);
+            model.addAttribute("archives", archives);
+        }
         List tagList = systemService.findTagList();
         List blogLatest = blogService.findBlogUpLimit(5);
         model.addAttribute("tagList", tagList);
@@ -76,35 +78,25 @@ public class PageController {
      */
     private List<Archive> sort(List<Blog> li) {
         List<Archive> list = new ArrayList();
+        boolean flag;
         for (int i = 0; i < li.size(); i++) {
-            String datetime = li.get(i).getEditTime();
-            char[] arr = datetime.toCharArray();
-            StringBuilder sb = new StringBuilder();
-            for (int x = 0; x < 7; x++) {
-                sb.append(arr[x]);
-            }
-            boolean f = true;
+            DateInfo date = new DateInfo(li.get(i).getEditTime());
+            Archive archive = new Archive();
+            archive.setDate(date);
+            li.get(i).setEditTime(date.getDay());
+            archive.add(li.get(i));
+            flag = true;
             for (int j = 0; j < list.size(); j++) {
-                String str = list.get(j).getDate().getYear() + '-' + list.get(j).getDate().getMonth();
-                if (str.equals(sb.toString())) {
-                    f = false;
-                    break;
+                if (list.get(j).getDate().getYear().equals(date.getYear())) {
+                    if (list.get(j).getDate().getMonth().equals(date.getMonth())) {
+                        list.get(j).add(li.get(i));
+                        flag = false;
+                    }
                 }
             }
-            if (f) {
-                Archive archive = new Archive();
-                archive.setDate(new DateInfo(datetime));
-                list.add(archive);
-            }
-        }
+            if (flag) {
 
-        for (int i = 0; i < list.size(); i++) {
-            String str = list.get(i).getDate().getYear() + '-' + list.get(i).getDate().getMonth();
-            for (int j = 0; j < li.size(); j++) {
-                if (li.get(j).getEditTime().indexOf(str) >= 0) {
-                    li.get(j).setEditTime(list.get(i).getDate().getDay());
-                    list.get(i).add(li.get(j));
-                }
+                list.add(archive);
             }
         }
         return list;

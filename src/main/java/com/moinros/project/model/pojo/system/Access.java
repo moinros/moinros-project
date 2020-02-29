@@ -29,4 +29,11 @@ public class Access {
         this.accessNote = accessNote;
     }
 
+    @Override
+    public String toString() {
+        return "Access{" +
+                "clientIp='" + clientIp + '\'' +
+                ", accessNote='" + accessNote + '\'' +
+                '}';
+    }
 }

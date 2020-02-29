@@ -1,5 +1,6 @@
 package com.moinros.project.controller;
 
+import com.moinros.project.common.annotation.tool.LogInfo;
 import com.moinros.project.model.pojo.system.Checkcode;
 import com.moinros.project.result.Reply;
 import com.moinros.project.result.enums.Status;
@@ -56,8 +57,9 @@ public class PublicController {
 
     @ResponseBody
     @PostMapping("/sys/get/mail/checkcode")
+    @LogInfo(value = "发送邮件", clazz = PublicController.class)
     public Reply senderEmail(@RequestBody String email, HttpSession session) {
-     //   System.out.println(email);
+        //   System.out.println(email);
         String checkcode = StringUtil.getRandomChar(StrConst.SEQUENCE, 10);
         Map map = new HashMap();
         map.put("${checkcode}", checkcode);

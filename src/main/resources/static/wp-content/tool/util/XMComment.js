@@ -278,6 +278,10 @@
             this._initCSS(this.config.CSS);
             this._initEvent();
         },
+        // 清空文本内容
+        _removeText: function() {
+            this.framework.editor.value = '';
+        },
         // 初始化需要绑定的事件
         _initEvent: function() {
             let $this = this;
@@ -374,6 +378,9 @@
             };
             this.showTips = (text) => {
                 editor._showTips(text)
+            };
+            this.removeText = () => {
+                editor._removeText()
             };
         },
     };

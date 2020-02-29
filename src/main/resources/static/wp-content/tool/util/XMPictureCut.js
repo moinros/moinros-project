@@ -464,7 +464,7 @@
     });
 
 
-    // 配置信息
+// 配置信息
     const CONFIG = {
         // 插件的z-index属性
         zIndex: 999,
@@ -659,9 +659,15 @@
         ],
     };
 
+    // 插件数组,创建每一个PictureCut对象都会添加到其中
     let PLUGIN_LIST = [];
 
-    // 图片裁剪插件本体
+    /**
+     * 图片裁剪插件本体 构造函数
+     * @param $config 配置信息
+     * @param $framework DOM结构
+     * @param $id 插件ID
+     */
     function PictureCut($config, $framework, $id) {
         // DOM结构
         let $f = {
@@ -681,8 +687,8 @@
             drag: void 0,
             // 裁剪框初始尺寸
             dragSize: {
-                width: 100,
-                height: 100 / $config.aspectRatio,
+                width: 100, // 长
+                height: (100 / $config.aspectRatio),  // 按照config配置计算初始宽
             },
             // 预览图外套
             previewBox: void 0,
@@ -776,15 +782,18 @@
             };
         },
         mouseState: true,
+// 通用的设置鼠标事件函数
         setEvent: function setEvent(elem, crop, fn) {
-            // 为指定的元素绑定鼠标事件
             elem.onmousedown = function(me) {
+                // 鼠标状态,防止事件冒泡
                 if (crop.mouseState) {
                     crop.mouseState = false;
                     // 获取鼠标和`裁剪框`的坐标参数
                     let coordinate = crop.getCoordinate(me);
                     document.onmousemove = function(e) {
+                        // 计算并设置X轴偏移量
                         coordinate.x = coordinate.diffX - e.clientX;
+                        // 计算并设置Y轴偏移量
                         coordinate.y = coordinate.diffY - e.clientY;
                         // 执行元素绑定的函数
                         fn(e, crop, coordinate);
@@ -931,23 +940,31 @@
             });
 
             // 东北
-            this.setEvent($framework.point.ne, $this, function(e, crop, cs) {
-                // 计算缩放后的长
-                let dw = (cs.DW - cs.x > cs.MW - cs.DX ? cs.MW - cs.DX : cs.DW - cs.x);
-                // 计算缩放后的宽
-                let dh = (cs.DH + cs.y > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DH + cs.y);
-                // 是否等比例放大裁剪框
-                if (crop.config.freeScaling) {
-                    dw = cs.DW * (dw / cs.DW < dh / cs.DH ? dw / cs.DW : dh / cs.DH);
-                    dh = cs.DH * (dw / cs.DW < dh / cs.DH ? dw / cs.DW : dh / cs.DH);
-                }
-                // 因为只需要向右边拖动,所以X坐标不需要校准
-                // 校准Y坐标 [原始Y坐标 - 偏移量 == 当前Y坐标; 原始Y坐标 + 原始高度 == 最大Y坐标;]
-                let dy = (cs.DY + cs.DH - dh < 0 ? 0 : cs.DY + cs.DH - dh > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DY + cs.DH - dh);
-                // let dy = cs.DY - cs.y < 0 ? 0 : cs.DY - cs.y > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DY - cs.y;
-                // 计算完成后重新设置尺寸,实现图片缩放效果
-                $D(crop.framework.drag).width(dw).height(dh).top(dy);
-            });
+
+            this.setEvent($framework.point.ne, $this,
+                /**
+                 *
+                 * @param e
+                 * @param crop
+                 * @param cs
+                 */
+                function(e, crop, cs) {
+                    // 计算缩放后的长
+                    let dw = (cs.DW - cs.x > cs.MW - cs.DX ? cs.MW - cs.DX : cs.DW - cs.x);
+                    // 计算缩放后的宽
+                    let dh = (cs.DH + cs.y > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DH + cs.y);
+                    // 是否等比例放大裁剪框
+                    if (crop.config.freeScaling) {
+                        dw = cs.DW * (dw / cs.DW < dh / cs.DH ? dw / cs.DW : dh / cs.DH);
+                        dh = cs.DH * (dw / cs.DW < dh / cs.DH ? dw / cs.DW : dh / cs.DH);
+                    }
+                    // 因为只需要向右边拖动,所以X坐标不需要校准
+                    // 校准Y坐标 [原始Y坐标 - 偏移量 == 当前Y坐标; 原始Y坐标 + 原始高度 == 最大Y坐标;]
+                    let dy = (cs.DY + cs.DH - dh < 0 ? 0 : cs.DY + cs.DH - dh > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DY + cs.DH - dh);
+                    // let dy = cs.DY - cs.y < 0 ? 0 : cs.DY - cs.y > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DY - cs.y;
+                    // 计算完成后重新设置尺寸,实现图片缩放效果
+                    $D(crop.framework.drag).width(dw).height(dh).top(dy);
+                });
 
             // 东南
             this.setEvent($framework.point.se, $this, function(e, crop, cs) {
@@ -1000,8 +1017,7 @@
                 let dy = (cs.DY + cs.DH - dh < 0 ? 0 : cs.DY + cs.DH - dh > cs.DY + cs.DH ? cs.DY + cs.DH : cs.DY + cs.DH - dh);
                 // 计算完成后重新设置尺寸,实现图片缩放效果
                 $D(crop.framework.drag).width(dw).height(dh).left(dx).top(dy);
-            })
-            ;
+            });
             // 为图片选择框绑定事件
             $D($framework.button.fileInput).on("change", function() {
                 $this.loadingImage(this);
