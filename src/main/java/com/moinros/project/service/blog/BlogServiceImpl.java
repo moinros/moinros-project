@@ -24,6 +24,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogMapper blogMapper;
+    @Autowired
     private SystemService systemService;
 
     @Override
