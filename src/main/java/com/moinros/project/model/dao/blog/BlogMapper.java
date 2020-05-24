@@ -19,36 +19,39 @@ import java.util.List;
 public interface BlogMapper {
 
     @SelectProvider(method = "selectAllBlogSQL", type = BlogSqlProvider.class)
-    public List<Blog> selectAllBlog();
+    List<Blog> selectAllBlog();
 
     @SelectProvider(method = "selectBlogLiSQL", type = BlogSqlProvider.class)
-    public List<Blog> selectBlogLi();
+    List<Blog> selectBlogLi();
 
     @Select("SELECT `b`.`blog_id` AS `blogId`,`b`.`blog_subject` AS `blogSubject`,`b`.`edit_time` AS `editTime`,`b`.`blog_tags` AS `blogTags` FROM `blog` AS `b` ORDER BY `b`.`edit_time` DESC")
-    public List<Blog> selectBlogTitle();
+    List<Blog> selectBlogTitle();
 
     @SelectProvider(method = "selectBlogSQL", type = BlogSqlProvider.class)
-    public List<Blog> selectBlog(Blog blog);
+    List<Blog> selectBlog(Blog blog);
 
     @SelectProvider(method = "selectBlogSQL", type = BlogSqlProvider.class)
-    public Blog selectBlogByBlog(Blog blog);
+    Blog selectBlogByBlog(Blog blog);
 
     @SelectProvider(method = "selectBlogByTypeSQL", type = BlogSqlProvider.class)
-    public List<Blog> selectBlogByType(String blogType);
+    List<Blog> selectBlogByType(String blogType);
+
+    @SelectProvider(method = "selectBlogBySubjectSQL", type = BlogSqlProvider.class)
+    List<Blog> selectBlogBySubject(String subject);
 
     @Select("SELECT count(*) FROM `blog`")
-    public Integer selectBlogTotalCount();
+    Integer selectBlogTotalCount();
 
     @Update("UPDATE blog SET `visitor_count` = (`visitor_count` + 1) WHERE `blog_id` = #{blogId}")
-    public Integer updateVisitorCount(int blogId);
+    Integer updateVisitorCount(int blogId);
 
     @InsertProvider(method = "insertBlogSQL", type = BlogSqlProvider.class)
-    public Integer insertBlog(Blog blog);
+    Integer insertBlog(Blog blog);
 
     @UpdateProvider(method = "updateBlogSQL", type = BlogSqlProvider.class)
-    public Integer updateBlog(Blog blog);
+    Integer updateBlog(Blog blog);
 
     @SelectProvider(method = "selectBlogByLimitSQL", type = BlogSqlProvider.class)
-    public List<Blog> selectBlogByLimit(int start, int end);
+    List<Blog> selectBlogByLimit(int start, int end);
 
 }

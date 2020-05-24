@@ -8,6 +8,8 @@ import com.moinros.project.model.dao.blog.BlogMapper;
 import com.moinros.project.model.dto.ResultValue;
 import com.moinros.project.model.dto.vo.ResultStateValue;
 import com.moinros.project.model.pojo.Blog;
+import com.moinros.project.model.pojo.Tag;
+import com.moinros.project.service.system.SystemService;
 import com.moinros.project.tool.util.date.DateFormatUtil;
 import com.moinros.project.tool.util.string.StringUtil;
 import com.moinros.project.tool.web.PageBean;
@@ -22,6 +24,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private BlogMapper blogMapper;
+    private SystemService systemService;
 
     @Override
     @TagMapping
@@ -58,19 +61,34 @@ public class BlogServiceImpl implements BlogService {
     @Base64Decoder
     public List<Blog> searchBlog(String value) {
         if (value == null || value == "") {
-            List<Blog> li = blogMapper.selectBlogLi();
-            return li == null || li.size() <= 0 ? null : li;
+            return null;
         }
         value = StringUtil.stringToLowercase(value);
         value = value.replace("c/c++", "c-plus");
         value = value.replace("c++", "c-plus");
         value = value.replace("c#", "c-sharp");
-        List<Blog> li = blogMapper.selectBlogByType('%' + value + '%');
-        if (li != null && li.size() > 0) {
-            return li == null || li.size() <= 0 ? null : li;
+        Tag tag = systemService.findTagByMark(value);
+        List<Blog> li = null;
+        if (tag != null) {
+            li = blogMapper.selectBlogByType('%' + tag.getTagMark() + '%');
+        } else {
+            li = blogMapper.selectBlogByType('%' + value + '%');
         }
-        value = StringUtil.stringGetChar(value);
-        li = blogMapper.selectBlogByType('%' + value + '%');
+        List<Blog> item = blogMapper.selectBlogBySubject('%' + value + '%');
+        if (li != null && item != null && item.size() > 0) {
+            boolean f = true;
+            for (int i = 0; i < item.size(); i++) {
+                for (int j = 0; j < li.size(); j++) {
+                    if (item.get(i).getBlogSubject().equals(li.get(j).getBlogSubject())) {
+                        f = false;
+                        break;
+                    }
+                }
+                if (f) li.add(item.get(i));
+            }
+        } else {
+            return item == null || item.size() <= 0 ? null : item;
+        }
         return li == null || li.size() <= 0 ? null : li;
     }
 

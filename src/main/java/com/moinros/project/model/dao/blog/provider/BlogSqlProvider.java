@@ -65,7 +65,18 @@ public class BlogSqlProvider {
             {
                 SELECT(SELECT_LI_SQL);
                 FROM("`blog` AS `b`");
-                WHERE("`b`.`blog_tags` LIKE CONCAT('%', #{blogTags}, '%')");
+                WHERE("`b`.`blog_tags` LIKE CONCAT('%', #{blogType}, '%')");
+                ORDER_BY("`b`.`edit_time` DESC");
+            }
+        }.toString();
+    }
+
+    public String selectBlogBySubjectSQL() {
+        return new SQL() {
+            {
+                SELECT(SELECT_LI_SQL);
+                FROM("`blog` AS `b`");
+                WHERE("`b`.`blog_subject` LIKE CONCAT('%', #{subject}, '%')");
                 ORDER_BY("`b`.`edit_time` DESC");
             }
         }.toString();
